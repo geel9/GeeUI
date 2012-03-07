@@ -63,6 +63,26 @@ namespace GeeUI.Views
             }
         }
 
+        public virtual Rectangle ContentBoundBox
+        {
+            get
+            {
+                return BoundBox;
+            }
+        }
+
+        public virtual Rectangle OffsetContentBoundBox
+        {
+            get
+            {
+                if (parentView == null) return ContentBoundBox;
+                Rectangle curBB = ContentBoundBox;
+                curBB.X += (int)(offsetPosition.X - position.X);
+                curBB.Y += (int)(offsetPosition.Y - position.Y);
+                return curBB;
+            }
+        }
+
         public Vector2 position = Vector2.Zero;
         public Vector2 offsetPosition
         {
@@ -75,7 +95,7 @@ namespace GeeUI.Views
 
         public int width = 0, height = 0;
 
-        private List<View> _children = new List<View>();
+        protected internal List<View> _children = new List<View>();
 
         public View[] children
         {
@@ -109,7 +129,7 @@ namespace GeeUI.Views
         {
             _children.Remove(view);
             List<View> sortedChildren = _children;
-            sortedChildren.Sort(ViewDepthComparer.CompareDepths);
+            sortedChildren.Sort(ViewDepthComparer.CompareDepthsInverse);
             sortedChildren.Add(view);
             _children = sortedChildren;
             childrenDepth = 0;
@@ -164,21 +184,24 @@ namespace GeeUI.Views
         {
             if (parentView == null || ignoreParentBounds) return;
             Rectangle curBB = OffsetBoundBox;
-            Rectangle parentBB = parentView.OffsetBoundBox;
+            Rectangle parentBB = parentView.OffsetContentBoundBox;
             int xOffset = curBB.Right - parentBB.Right;
             int yOffset = curBB.Bottom - parentBB.Bottom;
-            if (xOffset > 0) this.position.X -= xOffset;
+            if (xOffset > 0)
+                this.position.X -= xOffset;
             else
             {
                 xOffset = curBB.Left - parentBB.Left;
                 if (xOffset < 0)
                     this.position.X -= xOffset;
             }
-            if (yOffset > 0) this.position.Y -= yOffset;
+            if (yOffset > 0)
+                this.position.Y -= yOffset;
             else
             {
                 yOffset = curBB.Top - parentBB.Top;
-                if (yOffset < 0) position.Y -= yOffset;
+                if (yOffset < 0)
+                    position.Y -= yOffset;
             }
         }
 
