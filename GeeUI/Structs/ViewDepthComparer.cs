@@ -10,6 +10,7 @@ namespace GeeUI.Structs
     {
         public static int CompareDepths(View view1, View view2)
         {
+            if (view2.thisDepth == -1) return -1;
             return view2.thisDepth - view1.thisDepth;
         }
 

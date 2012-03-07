@@ -133,6 +133,21 @@ namespace GeeUI.Managers
         {
             return keyboardState.IsKeyDown(k);
         }
+
+        public static bool isLeftMousePressed()
+        {
+            return mouseState.LeftButton == ButtonState.Pressed;
+        }
+
+        public static bool isRightMousePresed()
+        {
+            return mouseState.RightButton == ButtonState.Pressed;
+        }
+
+        public static bool isMiddleMousePressed()
+        {
+            return mouseState.MiddleButton == ButtonState.Pressed;
+        }
     }
     public enum MouseButton
     {

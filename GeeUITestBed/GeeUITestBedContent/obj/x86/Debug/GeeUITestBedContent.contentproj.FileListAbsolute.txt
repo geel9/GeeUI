@@ -1,1 +1,2 @@
 D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBedContent\obj\x86\Debug\GeeUITestBedContent.contentprojResolveAssemblyReference.cache
+C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBedContent\obj\x86\Debug\ResolveAssemblyReference.cache

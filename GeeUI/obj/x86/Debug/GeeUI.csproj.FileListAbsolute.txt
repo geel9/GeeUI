@@ -6,3 +6,12 @@ D:\Projects\C#\GeeUI\GeeUI\bin\x86\Debug\GeeUI.pdb
 D:\Projects\C#\GeeUI\GeeUI\obj\x86\Debug\GeeUI.dll
 D:\Projects\C#\GeeUI\GeeUI\obj\x86\Debug\GeeUI.pdb
 D:\Projects\C#\GeeUI\GeeUI\obj\x86\Debug\GeeUI.csprojResolveAssemblyReference.cache
+C:\Users\Josh\GeeUI\GeeUI\bin\x86\Debug\GeeUI.dll
+C:\Users\Josh\GeeUI\GeeUI\bin\x86\Debug\GeeUI.pdb
+C:\Users\Josh\GeeUI\GeeUI\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Josh\GeeUI\GeeUI\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Josh\GeeUI\GeeUI\obj\x86\Debug\GeeUI.Resource1.resources
+C:\Users\Josh\GeeUI\GeeUI\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\Josh\GeeUI\GeeUI\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\Josh\GeeUI\GeeUI\obj\x86\Debug\GeeUI.dll
+C:\Users\Josh\GeeUI\GeeUI\obj\x86\Debug\GeeUI.pdb

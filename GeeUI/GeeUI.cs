@@ -23,6 +23,12 @@ namespace GeeUI
         internal static Game theGame;
 
         public static NinePatch ninePatch_textFieldDefault = new NinePatch();
+        public static NinePatch ninePatch_textFieldSelected = new NinePatch();
+        public static NinePatch ninePatch_textFieldRight = new NinePatch();
+        public static NinePatch ninePatch_textFieldWrong = new NinePatch();
+
+        public static NinePatch ninePatch_windowSelected = new NinePatch();
+        public static NinePatch ninePatch_windowUnselected = new NinePatch();
 
         private static InputManager inputManager = new InputManager();
 
@@ -38,19 +44,36 @@ namespace GeeUI
             Texture2D textFieldDefault = ConversionManager.bitmapToTexture(Resource1.textfield_default_9);
             ninePatch_textFieldDefault.LoadFromTexture(textFieldDefault);
 
+            Texture2D textFieldSelected = ConversionManager.bitmapToTexture(Resource1.textfield_selected_9);
+            ninePatch_textFieldSelected.LoadFromTexture(textFieldSelected);
+
+            Texture2D textFieldRight = ConversionManager.bitmapToTexture(Resource1.textfield_selected_right_9);
+            ninePatch_textFieldRight.LoadFromTexture(textFieldRight);
+
+            Texture2D textFieldWrong = ConversionManager.bitmapToTexture(Resource1.textfield_selected_wrong_9);
+            ninePatch_textFieldWrong.LoadFromTexture(textFieldWrong);
+
+            Texture2D windowSelected = ConversionManager.bitmapToTexture(Resource1.window_selected_9);
+            ninePatch_windowSelected.LoadFromTexture(windowSelected);
+
+            Texture2D windowUnselected = ConversionManager.bitmapToTexture(Resource1.window_unselected_9);
+            ninePatch_windowUnselected.LoadFromTexture(windowUnselected);
+
             InputManager.BindMouse(() => handleClick(rootView, InputManager.GetMousePos()), MouseButton.Left);
             InputManager.BindMouse(() => handleMouseMovement(rootView, InputManager.GetMousePos()), MouseButton.Movement);
         }
 
         internal static void handleClick(View view, Point mousePos)
         {
+            if (!view.active)
+                return;
             View[] sortedChildren = view.children;
             Array.Sort(sortedChildren, ViewDepthComparer.CompareDepths);
             bool didLower = false;
             for (int i = 0; i < sortedChildren.Length; i++)
             {
                 View child = sortedChildren[i];
-                if (child.OffsetBoundBox.Contains(mousePos))
+                if (child.OffsetBoundBox.Contains(mousePos) && child.active)
                 {
                     handleClick(child, mousePos);
                     didLower = true;
@@ -71,9 +94,19 @@ namespace GeeUI
 
         internal static void handleMouseMovement(View view, Point mousePos)
         {
+            if (!view.active) return;
             View[] sortedChildren = view.children;
             Array.Sort(sortedChildren, ViewDepthComparer.CompareDepths);
             bool didLower = false;
+            if (view.parentView == null)
+            {
+                //The first call
+                List<View> allViews = getAllViews(rootView);
+                for (int i = 0; i < allViews.Count; i++)
+                {
+                    allViews[i].mouseOver = false;
+                }
+            }
             for (int i = 0; i < sortedChildren.Length; i++)
             {
                 View child = sortedChildren[i];
@@ -82,9 +115,8 @@ namespace GeeUI
                     handleMouseMovement(child, mousePos);
                     didLower = true;
                     child.mouseOver = true;
+                    break;
                 }
-                else
-                    child.mouseOver = false;
             }
             if (!didLower)
             {
@@ -109,6 +141,7 @@ namespace GeeUI
             for (int i = 0; i < sortedChildren.Length; i++)
             {
                 View updating = sortedChildren[i];
+                if (!updating.active) continue;
                 updating.Update(gameTime);
                 UpdateView(updating, gameTime);
             }
@@ -121,6 +154,7 @@ namespace GeeUI
             for (int i = 0; i < sortedChildren.Length; i++)
             {
                 View drawing = sortedChildren[i];
+                if (!drawing.active) continue;
                 drawing.Draw(spriteBatch);
                 DrawView(drawing, spriteBatch);
             }
@@ -129,6 +163,7 @@ namespace GeeUI
         internal static List<View> getAllViews(View rootView)
         {
             List<View> ret = new List<View>();
+            if (!rootView.active) return ret;
             ret.Add(rootView);
             for (int i = 0; i < rootView.children.Length; i++)
             {

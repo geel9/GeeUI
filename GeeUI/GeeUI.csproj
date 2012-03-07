@@ -77,6 +77,7 @@
     <Compile Include="Structs\RadioButtonGroup.cs" />
     <Compile Include="Structs\ViewDepthComparer.cs" />
     <Compile Include="Views\ButtonView.cs" />
+    <Compile Include="Views\PanelView.cs" />
     <Compile Include="Views\View.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +97,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\textfield_selected_wrong.9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\window_selected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\window_unselected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\window_unselected.9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\window_selected.9.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

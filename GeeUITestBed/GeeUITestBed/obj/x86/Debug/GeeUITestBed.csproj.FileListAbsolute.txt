@@ -7,3 +7,12 @@ D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\GeeUITestBed.exe
 D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\GeeUITestBed.pdb
 D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\GeeUI.dll
 D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\GeeUI.pdb
+C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\Content\testFont.xnb
+C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\GeeUITestBed.exe
+C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\GeeUITestBed.pdb
+C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\GeeUI.dll
+C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\GeeUI.pdb
+C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\GeeUITestBed.exe
+C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\GeeUITestBed.pdb

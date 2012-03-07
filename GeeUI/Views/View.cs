@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework.Graphics;
+using GeeUI.Structs;
 
 namespace GeeUI.Views
 {
@@ -23,8 +24,9 @@ namespace GeeUI.Views
         public int childrenDepth = 0;
         public int thisDepth = 0;
 
-        public Boolean drawContent = false;
         public bool ignoreParentBounds = false;
+        public bool selected = false;
+        public bool active = true;
 
         private bool _mouseOver = false;
         public bool mouseOver
@@ -56,7 +58,8 @@ namespace GeeUI.Views
             get
             {
                 if (parentView == null) return BoundBox;
-                return new Rectangle((int)offsetPosition.X, (int)offsetPosition.Y, width, height);
+                Rectangle curBB = BoundBox;
+                return new Rectangle((int)offsetPosition.X, (int)offsetPosition.Y, curBB.Width, curBB.Height);
             }
         }
 
@@ -102,30 +105,59 @@ namespace GeeUI.Views
 
         }
 
-        protected internal virtual void onMClick(Vector2 position)
+        public void bringChildToFront(View view)
+        {
+            _children.Remove(view);
+            List<View> sortedChildren = _children;
+            sortedChildren.Sort(ViewDepthComparer.CompareDepths);
+            sortedChildren.Add(view);
+            _children = sortedChildren;
+            childrenDepth = 0;
+            for (int i = 0; i < _children.Count; i++)
+            {
+                _children[i].thisDepth = i;
+                childrenDepth++;
+            }
+
+        }
+
+        public void reOrderChildren()
+        {
+            View[] sortedChildren = children;
+            Array.Sort(sortedChildren, ViewDepthComparer.CompareDepths);
+            childrenDepth = 0;
+
+            for (int i = 0; i < sortedChildren.Length; i++)
+            {
+                _children[i].thisDepth = i;
+                childrenDepth++;
+            }
+        }
+
+        protected internal virtual void onMClick(Vector2 position, bool fromChild = false)
         {
             if (onMouseClick != null)
                 onMouseClick(this, new EventArgs());
-            if (parentView != null) parentView.onMClick(position);
+            if (parentView != null) parentView.onMClick(position, true);
         }
 
-        protected internal virtual void onMClickAway()
+        protected internal virtual void onMClickAway(bool fromChild = false)
         {
 
         }
 
-        protected internal virtual void onMOver()
+        protected internal virtual void onMOver(bool fromChild = false)
         {
             if (onMouseOver != null)
                 onMouseOver(this, new EventArgs());
-            if (parentView != null) parentView.onMOver();
+            if (parentView != null) parentView.onMOver(true);
         }
 
-        protected internal virtual void onMOff()
+        protected internal virtual void onMOff(bool fromChild = false)
         {
             if (onMouseOff != null)
                 onMouseOff(this, new EventArgs());
-            if (parentView != null) parentView.onMOff();
+            if (parentView != null) parentView.onMOff(true);
         }
 
         protected internal virtual void Update(GameTime theTime)
