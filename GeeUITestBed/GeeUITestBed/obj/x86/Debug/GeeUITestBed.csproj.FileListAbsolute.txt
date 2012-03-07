@@ -1,0 +1,9 @@
+D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\Content\testFont.xnb
+D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\GeeUITestBed.exe
+D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\GeeUITestBed.pdb
+D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\GeeUITestBed.csprojResolveAssemblyReference.cache
+D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\GeeUITestBed.exe
+D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\GeeUITestBed.pdb
+D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\GeeUI.dll
+D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\GeeUI.pdb

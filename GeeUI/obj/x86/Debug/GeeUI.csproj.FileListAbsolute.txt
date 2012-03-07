@@ -1,0 +1,8 @@
+D:\Projects\C#\GeeUI\GeeUI\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+D:\Projects\C#\GeeUI\GeeUI\obj\x86\Debug\GeeUI.Resource1.resources
+D:\Projects\C#\GeeUI\GeeUI\obj\x86\Debug\GeeUI.csproj.GenerateResource.Cache
+D:\Projects\C#\GeeUI\GeeUI\bin\x86\Debug\GeeUI.dll
+D:\Projects\C#\GeeUI\GeeUI\bin\x86\Debug\GeeUI.pdb
+D:\Projects\C#\GeeUI\GeeUI\obj\x86\Debug\GeeUI.dll
+D:\Projects\C#\GeeUI\GeeUI\obj\x86\Debug\GeeUI.pdb
+D:\Projects\C#\GeeUI\GeeUI\obj\x86\Debug\GeeUI.csprojResolveAssemblyReference.cache
