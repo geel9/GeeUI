@@ -56,20 +56,23 @@ namespace GeeUITestBed
 
             SpriteFont font = Content.Load<SpriteFont>("testFont");
 
-            PanelView panel = new PanelView(GeeUI.GeeUI.rootView, new Vector2(10, 10));
-            panel.width = 600;
-            panel.height = 200;
 
-            PanelView panel2 = new PanelView(panel, new Vector2(500, 100));
+            WindowView window = new WindowView(GeeUI.GeeUI.rootView, new Vector2(10, 10), font);
+            window.windowText = "WindowView.";
 
-            panel2.width = 150;
-            panel2.height = 50;
+            PanelView panel2 = new PanelView(window, new Vector2(0, 0));
+            panel2.width = 500;
+            panel2.height = 300;
 
-            ButtonView button_depth0_container = new ButtonView(panel2, "Hello", new Vector2(1, 1), font);
+            ButtonView button_depth0_container = new ButtonView(panel2, "Add a WindowView", new Vector2(1, 1), font);
 
             button_depth0_container.onMouseClick += new View.MouseClickEventHandler((object sender, EventArgs e) =>
             {
-                panel2.active = !panel2.active;
+                WindowView view = new WindowView(panel2, new Vector2(20, 20), font);
+                view.windowText = "WindowView 2.";
+                PanelView panel3 = new PanelView(view, new Vector2(0, 0));
+                panel3.width = 200;
+                panel3.height = 100;
             });
             // TODO: use this.Content to load your game content here
         }

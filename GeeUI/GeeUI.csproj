@@ -79,6 +79,7 @@
     <Compile Include="Views\ButtonView.cs" />
     <Compile Include="Views\PanelView.cs" />
     <Compile Include="Views\View.cs" />
+    <Compile Include="Views\WindowView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\textfield_default.9.png" />

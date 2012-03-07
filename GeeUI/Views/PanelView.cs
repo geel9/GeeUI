@@ -13,10 +13,6 @@ namespace GeeUI.Views
         public NinePatch unselectedNinepatch = new NinePatch();
         public NinePatch selectedNinepatch = new NinePatch();
 
-        protected internal bool selectedOffChildren = false;
-        protected internal Vector2 lastMousePosition = Vector2.Zero;
-        protected internal Vector2 mouseSelectedOffset = Vector2.Zero;
-
         public override Rectangle BoundBox
         {
             get
@@ -25,6 +21,15 @@ namespace GeeUI.Views
                 int width = curPatch.leftWidth + curPatch.rightWidth + this.width;
                 int height = curPatch.topHeight + curPatch.bottomHeight + this.height;
                 return new Rectangle((int)position.X, (int)position.Y, width, height);
+            }
+        }
+
+        public override Rectangle ContentBoundBox
+        {
+            get
+            {
+                NinePatch curPatch = selected ? selectedNinepatch : unselectedNinepatch;
+                return new Rectangle((int)position.X + curPatch.leftWidth, (int)position.Y + curPatch.topHeight, width, height);
             }
         }
 
@@ -42,31 +47,15 @@ namespace GeeUI.Views
             base.Draw(spriteBatch);
         }
 
-        protected internal override void Update(GameTime theTime)
-        {
-            Vector2 newMousePosition = InputManager.GetMousePosV();
-            if (selectedOffChildren && selected && InputManager.isLeftMousePressed())
-            {
-                position = (newMousePosition - mouseSelectedOffset) ;
-            }
-            lastMousePosition = newMousePosition;
-            base.Update(theTime);
-        }
+
 
         protected internal override void onMClick(Microsoft.Xna.Framework.Vector2 position, bool fromChild = false)
         {
-            selectedOffChildren = !fromChild;
-            selected = true;
-            lastMousePosition = position;
-            mouseSelectedOffset = position - this.position;
-            parentView.bringChildToFront(this);
             base.onMClick(position, true);
         }
 
         protected internal override void onMClickAway(bool fromChild = false)
         {
-            selectedOffChildren = false;
-            selected = false;
             base.onMClickAway(true);
         }
 
