@@ -53,13 +53,13 @@ namespace GeeUI.Views
             }
         }
 
-        public virtual Rectangle OffsetBoundBox
+        public virtual Rectangle AbsoluteBoundBox
         {
             get
             {
                 if (parentView == null) return BoundBox;
                 Rectangle curBB = BoundBox;
-                return new Rectangle((int)offsetPosition.X, (int)offsetPosition.Y, curBB.Width, curBB.Height);
+                return new Rectangle(absoluteX, absoluteY, curBB.Width, curBB.Height);
             }
         }
 
@@ -71,25 +71,62 @@ namespace GeeUI.Views
             }
         }
 
-        public virtual Rectangle OffsetContentBoundBox
+        public virtual Rectangle AbsoluteContentBoundBox
         {
             get
             {
                 if (parentView == null) return ContentBoundBox;
                 Rectangle curBB = ContentBoundBox;
-                curBB.X += (int)(offsetPosition.X - position.X);
-                curBB.Y += (int)(offsetPosition.Y - position.Y);
+                curBB.X += absoluteX - x;
+                curBB.Y += absoluteY - y;
                 return curBB;
             }
         }
 
+        public int x
+        {
+            get
+            {
+                return (int)position.X;
+            }
+            set
+            {
+                position.X = value;
+            }
+        }
+        public int y
+        {
+            get
+            {
+                return (int)position.Y;
+            }
+            set
+            {
+                position.Y = value;
+            }
+        }
         public Vector2 position = Vector2.Zero;
-        public Vector2 offsetPosition
+
+        public int absoluteX
+        {
+            get
+            {
+                return (int)absolutePosition.X;
+            }
+        }
+        public int absoluteY
+        {
+            get
+            {
+                return (int)absolutePosition.Y;
+            }
+        }
+        public Vector2 absolutePosition
         {
             get
             {
                 if (parentView == null) return position;
-                return position + parentView.offsetPosition;
+                return position + parentView.absolutePosition;
             }
         }
 
@@ -117,6 +154,7 @@ namespace GeeUI.Views
                 throw new Exception("You cannot create a View without a parent; please use GeeUI.rootView for what you want.");
         }
 
+        #region Child management
         public void addChild(View child)
         {
             child.parentView = this;
@@ -124,6 +162,30 @@ namespace GeeUI.Views
             _children.Add(child);
 
         }
+
+        public void removeChild(View child)
+        {
+            _children.Remove(child);
+            child.parentView = null;
+            reOrderChildren();
+        }
+
+        #endregion
+
+        #region Parent management
+
+        public void setParent(View parent)
+        {
+            if (parentView != null)
+            {
+                parentView.removeChild(this);
+            }
+            parent.addChild(this);
+        }
+
+        #endregion
+
+        #region Child depth ordering
 
         public void bringChildToFront(View view)
         {
@@ -153,6 +215,10 @@ namespace GeeUI.Views
                 childrenDepth++;
             }
         }
+       
+        #endregion
+
+        #region Virtual methods/events
 
         protected internal virtual void onMClick(Vector2 position, bool fromChild = false)
         {
@@ -183,8 +249,8 @@ namespace GeeUI.Views
         protected internal virtual void Update(GameTime theTime)
         {
             if (parentView == null || ignoreParentBounds) return;
-            Rectangle curBB = OffsetBoundBox;
-            Rectangle parentBB = parentView.OffsetContentBoundBox;
+            Rectangle curBB = AbsoluteBoundBox;
+            Rectangle parentBB = parentView.AbsoluteContentBoundBox;
             int xOffset = curBB.Right - parentBB.Right;
             int yOffset = curBB.Bottom - parentBB.Bottom;
             if (xOffset > 0)
@@ -207,7 +273,8 @@ namespace GeeUI.Views
 
         protected internal virtual void Draw(SpriteBatch spriteBatch)
         {
-
         }
+        
+        #endregion
     }
 }

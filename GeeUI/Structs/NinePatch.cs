@@ -178,8 +178,6 @@ namespace GeeUI.Structs
             int leftMiddleHeight = Left.Height;
             float scaleMiddleByHorizontally = ((float)contentWidth / (float)topMiddleWidth);
             float scaleMiddleByVertically = ((float)contentHeight / (float)leftMiddleHeight);
-           // if (scaleMiddleByVertically < 1) scaleMiddleByVertically = 1;
-           // if (scaleMiddleByHorizontally < 1) scaleMiddleByHorizontally = 1;
 
             Vector2 drawTL = position;
             Vector2 drawT = drawTL + new Vector2(topLeft.Width, 0);

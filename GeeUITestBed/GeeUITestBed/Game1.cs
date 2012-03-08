@@ -50,10 +50,6 @@ namespace GeeUITestBed
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            //View parentView = new View(GeeUI.GeeUI.rootView);
-            //parentView.position = new Vector2(0, 0);
-            //parentView.width = parentView.height = 200;
-
             SpriteFont font = Content.Load<SpriteFont>("testFont");
 
 
@@ -69,10 +65,9 @@ namespace GeeUITestBed
             button_depth0_container.onMouseClick += new View.MouseClickEventHandler((object sender, EventArgs e) =>
             {
                 WindowView view = new WindowView(panel2, new Vector2(20, 20), font);
-                view.windowText = "WindowView 2.";
-                PanelView panel3 = new PanelView(view, new Vector2(0, 0));
-                panel3.width = 200;
-                panel3.height = 100;
+                view.windowText = "efeX is a fag";
+                ButtonView buttonView = new ButtonView(view, "Close WindowView", new Vector2(0, 0), font);
+                buttonView.onMouseClick += new View.MouseClickEventHandler((object sender2, EventArgs e2) => { panel2.removeChild(view); });
             });
             // TODO: use this.Content to load your game content here
         }
@@ -113,7 +108,7 @@ namespace GeeUITestBed
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            // TODO: Add your drawing code here
+
             GeeUI.GeeUI.Draw(spriteBatch);
 
             spriteBatch.End();

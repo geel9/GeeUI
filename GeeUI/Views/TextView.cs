@@ -2,20 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using GeeUI.Structs;
-using GeeUI.Managers;
+using Microsoft.Xna.Framework;
 
 namespace GeeUI.Views
 {
-
-    public class ButtonView : View
+    public class TextView : View
     {
-        public NinePatch normalNinepatch;
-        public NinePatch hoverNinepatch;
-        public NinePatch clickedNinepatch;
-
         public SpriteFont font;
 
         public string text;
@@ -26,9 +19,8 @@ namespace GeeUI.Views
         {
             get
             {
-                NinePatch patch = currentNinepatch;
-                int width = (int)(patch.leftWidth + patch.rightWidth + font.MeasureString(text).X);
-                int height = (int)(patch.topHeight + patch.bottomHeight + font.MeasureString(text).Y);
+                int width = (int)font.MeasureString(text).X;
+                int height = (int)font.MeasureString(text).Y;
                 return new Rectangle((int)position.X, (int)position.Y, width, height);
             }
         }
@@ -44,27 +36,9 @@ namespace GeeUI.Views
             }
         }
 
-        public NinePatch currentNinepatch
-        {
-            get
-            {
-                if (mouseOver)
-                {
-                    return InputManager.isLeftMousePressed() ? clickedNinepatch : hoverNinepatch;
-                }
-                else
-                {
-                    return normalNinepatch;
-                }
-            }
-        }
-
-        public ButtonView(View rootView, string text, Vector2 position, SpriteFont font)
+        public TextView(View rootView, string text, Vector2 position, SpriteFont font)
             : base(rootView)
         {
-            normalNinepatch = GeeUI.ninePatch_btnDefault;
-            hoverNinepatch = GeeUI.ninePatch_btnHover;
-            clickedNinepatch = GeeUI.ninePatch_btnClicked;
             this.text = text;
             this.position = position;
             this.font = font;
@@ -95,9 +69,7 @@ namespace GeeUI.Views
 
         protected internal override void Draw(SpriteBatch spriteBatch)
         {
-            NinePatch patch = currentNinepatch;
-            patch.Draw(spriteBatch, absolutePosition, (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y);
-            spriteBatch.DrawString(font, text, new Vector2(absolutePosition.X + patch.leftWidth, absolutePosition.Y + patch.topHeight), textColor);
+            spriteBatch.DrawString(font, text, absolutePosition, textColor);
             base.Draw(spriteBatch);
         }
     }

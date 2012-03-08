@@ -14,7 +14,7 @@
     <Settings>
       <ContentProjectGUID>{C3DA444D-D2F1-4565-97EC-2383E3C5B1E5}</ContentProjectGUID>
       <TargetPlatform>Windows</TargetPlatform>
-      <TargetProfile>Reach</TargetProfile>
+      <TargetProfile>HiDef</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
       <RootDirectory>D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBedContent\</RootDirectory>

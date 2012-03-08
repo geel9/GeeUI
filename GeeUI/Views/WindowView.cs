@@ -69,11 +69,11 @@ namespace GeeUI.Views
             }
         }
 
-        public override Rectangle OffsetContentBoundBox
+        public override Rectangle AbsoluteContentBoundBox
         {
             get
             {
-                return windowContentView.OffsetBoundBox;
+                return windowContentView.AbsoluteBoundBox;
             }
         }
 
@@ -86,31 +86,35 @@ namespace GeeUI.Views
             ninePatchSelected = GeeUI.ninePatch_textFieldSelected;
         }
 
-        protected internal override void Draw(SpriteBatch spriteBatch)
+        protected internal void FollowMouse()
         {
-            NinePatch patch = selected ? ninePatchSelected : ninePatchNormal;
-            patch.Draw(spriteBatch, offsetPosition, windowContentView.BoundBox.Width - (patch.leftWidth + patch.rightWidth), (int)windowTextFont.MeasureString(windowText).Y);
-            spriteBatch.DrawString(windowTextFont, windowText, offsetPosition + new Vector2(patch.leftWidth, patch.topHeight), Color.Black);
-         //   DrawManager.Draw_Box(new Vector2(OffsetBoundBox.Left, OffsetBoundBox.Top), new Vector2(OffsetBoundBox.Right, OffsetBoundBox.Bottom), Color.Red, spriteBatch);
-            base.Draw(spriteBatch);
-        }
-
-        protected internal override void Update(GameTime theTime)
-        {
-            if (windowContentView != null)
-            {
-                NinePatch patch = selected ? ninePatchSelected : ninePatchNormal;
-                Vector2 windowTextSize = windowTextFont.MeasureString(windowText);
-                int height = (int)(patch.topHeight + patch.bottomHeight + windowTextSize.Y);
-                windowContentView.position.Y = height;
-                windowContentView.position.X = 0;
-            }
             Vector2 newMousePosition = InputManager.GetMousePosV();
             if (selectedOffChildren && selected && InputManager.isLeftMousePressed())
             {
                 position = (newMousePosition - mouseSelectedOffset);
             }
             lastMousePosition = newMousePosition;
+        }
+
+        protected internal override void Draw(SpriteBatch spriteBatch)
+        {
+            NinePatch patch = selected ? ninePatchSelected : ninePatchNormal;
+            patch.Draw(spriteBatch, absolutePosition, windowContentView.BoundBox.Width - (patch.leftWidth + patch.rightWidth), (int)windowTextFont.MeasureString(windowText).Y);
+            spriteBatch.DrawString(windowTextFont, windowText, absolutePosition + new Vector2(patch.leftWidth, patch.topHeight), Color.Black);
+            base.Draw(spriteBatch);
+        }
+
+        protected internal override void Update(GameTime theTime)
+        {
+            FollowMouse();
+            if (windowContentView != null)
+            {
+                NinePatch patch = selected ? ninePatchSelected : ninePatchNormal;
+                Vector2 windowTextSize = windowTextFont.MeasureString(windowText);
+                int height = (int)(patch.topHeight + patch.bottomHeight + windowTextSize.Y);
+                windowContentView.position = new Vector2(0, height);
+            }
+
             base.Update(theTime);
         }
 
@@ -121,7 +125,10 @@ namespace GeeUI.Views
             windowContentView.selected = true;
             lastMousePosition = position;
             mouseSelectedOffset = position - this.position;
+
+            if(parentView != null)
             parentView.bringChildToFront(this);
+            FollowMouse();
             base.onMClick(position, true);
         }
 
@@ -131,6 +138,17 @@ namespace GeeUI.Views
             selected = false;
             windowContentView.selected = false;
             base.onMClickAway(true);
+        }
+        protected internal override void onMOff(bool fromChild = false)
+        {
+            FollowMouse();
+            base.onMOff(true);
+        }
+
+        protected internal override void onMOver(bool fromChild = false)
+        {
+            FollowMouse();
+            base.onMOver(fromChild);
         }
     }
 }

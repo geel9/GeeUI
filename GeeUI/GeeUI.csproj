@@ -13,7 +13,7 @@
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
-    <XnaProfile>Reach</XnaProfile>
+    <XnaProfile>HiDef</XnaProfile>
     <XnaCrossPlatformGroupID>5a15428f-ab0d-4625-a45f-3e1a6546f4f2</XnaCrossPlatformGroupID>
     <XnaOutputType>Library</XnaOutputType>
   </PropertyGroup>
@@ -78,6 +78,7 @@
     <Compile Include="Structs\ViewDepthComparer.cs" />
     <Compile Include="Views\ButtonView.cs" />
     <Compile Include="Views\PanelView.cs" />
+    <Compile Include="Views\TextView.cs" />
     <Compile Include="Views\View.cs" />
     <Compile Include="Views\WindowView.cs" />
   </ItemGroup>
@@ -110,6 +111,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\window_selected.9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btn_default.9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btn_hover.9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btn_clicked.9.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

@@ -27,6 +27,10 @@ namespace GeeUI
         public static NinePatch ninePatch_textFieldRight = new NinePatch();
         public static NinePatch ninePatch_textFieldWrong = new NinePatch();
 
+        public static NinePatch ninePatch_btnDefault = new NinePatch();
+        public static NinePatch ninePatch_btnHover = new NinePatch();
+        public static NinePatch ninePatch_btnClicked = new NinePatch();
+
         public static NinePatch ninePatch_windowSelected = new NinePatch();
         public static NinePatch ninePatch_windowUnselected = new NinePatch();
 
@@ -42,22 +46,28 @@ namespace GeeUI
             rootView.height = theGame.Window.ClientBounds.Height;
 
             Texture2D textFieldDefault = ConversionManager.bitmapToTexture(Resource1.textfield_default_9);
-            ninePatch_textFieldDefault.LoadFromTexture(textFieldDefault);
-
             Texture2D textFieldSelected = ConversionManager.bitmapToTexture(Resource1.textfield_selected_9);
-            ninePatch_textFieldSelected.LoadFromTexture(textFieldSelected);
-
             Texture2D textFieldRight = ConversionManager.bitmapToTexture(Resource1.textfield_selected_right_9);
-            ninePatch_textFieldRight.LoadFromTexture(textFieldRight);
-
             Texture2D textFieldWrong = ConversionManager.bitmapToTexture(Resource1.textfield_selected_wrong_9);
-            ninePatch_textFieldWrong.LoadFromTexture(textFieldWrong);
 
             Texture2D windowSelected = ConversionManager.bitmapToTexture(Resource1.window_selected_9);
-            ninePatch_windowSelected.LoadFromTexture(windowSelected);
-
             Texture2D windowUnselected = ConversionManager.bitmapToTexture(Resource1.window_unselected_9);
+
+            Texture2D btnDefault = ConversionManager.bitmapToTexture(Resource1.btn_default_9);
+            Texture2D btnClicked = ConversionManager.bitmapToTexture(Resource1.btn_clicked_9);
+            Texture2D btnHover = ConversionManager.bitmapToTexture(Resource1.btn_hover_9);
+
+            ninePatch_textFieldDefault.LoadFromTexture(textFieldDefault);
+            ninePatch_textFieldSelected.LoadFromTexture(textFieldSelected);
+            ninePatch_textFieldRight.LoadFromTexture(textFieldRight);
+            ninePatch_textFieldWrong.LoadFromTexture(textFieldWrong);
+
+            ninePatch_windowSelected.LoadFromTexture(windowSelected);
             ninePatch_windowUnselected.LoadFromTexture(windowUnselected);
+
+            ninePatch_btnDefault.LoadFromTexture(btnDefault);
+            ninePatch_btnClicked.LoadFromTexture(btnClicked);
+            ninePatch_btnHover.LoadFromTexture(btnHover);
 
             InputManager.BindMouse(() => handleClick(rootView, InputManager.GetMousePos()), MouseButton.Left);
             InputManager.BindMouse(() => handleMouseMovement(rootView, InputManager.GetMousePos()), MouseButton.Movement);
@@ -73,7 +83,7 @@ namespace GeeUI
             for (int i = 0; i < sortedChildren.Length; i++)
             {
                 View child = sortedChildren[i];
-                if (child.OffsetBoundBox.Contains(mousePos) && child.active)
+                if (child.AbsoluteBoundBox.Contains(mousePos) && child.active)
                 {
                     handleClick(child, mousePos);
                     didLower = true;
@@ -110,7 +120,7 @@ namespace GeeUI
             for (int i = 0; i < sortedChildren.Length; i++)
             {
                 View child = sortedChildren[i];
-                if (child.OffsetBoundBox.Contains(mousePos) && !didLower)
+                if (child.AbsoluteBoundBox.Contains(mousePos) && !didLower)
                 {
                     handleMouseMovement(child, mousePos);
                     didLower = true;

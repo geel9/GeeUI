@@ -43,7 +43,7 @@ namespace GeeUI.Views
         protected internal override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
         {
             NinePatch patch = selected ? selectedNinepatch : unselectedNinepatch;
-            patch.Draw(spriteBatch, offsetPosition, width, height);
+            patch.Draw(spriteBatch, absolutePosition, width, height);
             base.Draw(spriteBatch);
         }
 
