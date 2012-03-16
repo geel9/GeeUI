@@ -100,7 +100,8 @@ namespace GeeUI.Views
         {
             NinePatch patch = selected ? ninePatchSelected : ninePatchNormal;
             patch.Draw(spriteBatch, absolutePosition, windowContentView.BoundBox.Width - (patch.leftWidth + patch.rightWidth), (int)windowTextFont.MeasureString(windowText).Y);
-            spriteBatch.DrawString(windowTextFont, windowText, absolutePosition + new Vector2(patch.leftWidth, patch.topHeight), Color.Black);
+            string text = TextView.TruncateString(windowText, windowTextFont, windowContentView.ContentBoundBox.Width);
+            spriteBatch.DrawString(windowTextFont, text, absolutePosition + new Vector2(patch.leftWidth, patch.topHeight), Color.Black);
             base.Draw(spriteBatch);
         }
 

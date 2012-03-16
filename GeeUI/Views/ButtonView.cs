@@ -12,35 +12,43 @@ namespace GeeUI.Views
 
     public class ButtonView : View
     {
-        public NinePatch normalNinepatch;
-        public NinePatch hoverNinepatch;
-        public NinePatch clickedNinepatch;
+        public NinePatch ninePatchNormal;
+        public NinePatch ninePatchHover;
+        public NinePatch ninePatchClicked;
 
-        public SpriteFont font;
-
-        public string text;
-
-        public Color textColor = Color.Black;
+        public View buttonContentview
+        {
+            get
+            {
+                if (children.Length == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    return children[0];
+                }
+            }
+            set
+            {
+                if (this.children.Length == 0)
+                {
+                    addChild(value);
+                    return;
+                }
+                _children[0] = value;
+                reOrderChildren();
+            }
+        }
 
         public override Rectangle BoundBox
         {
             get
             {
                 NinePatch patch = currentNinepatch;
-                int width = (int)(patch.leftWidth + patch.rightWidth + font.MeasureString(text).X);
-                int height = (int)(patch.topHeight + patch.bottomHeight + font.MeasureString(text).Y);
+                int width = (int)(patch.leftWidth + patch.rightWidth + (buttonContentview != null ? buttonContentview.BoundBox.Width : 0));
+                int height = (int)(patch.topHeight + patch.bottomHeight + (buttonContentview != null ? buttonContentview.BoundBox.Height : 0));
                 return new Rectangle((int)position.X, (int)position.Y, width, height);
-            }
-        }
-
-        public override Rectangle AbsoluteBoundBox
-        {
-            get
-            {
-                Rectangle normalBB = BoundBox;
-                normalBB.X = (int)absolutePosition.X;
-                normalBB.Y = (int)absolutePosition.Y;
-                return normalBB;
             }
         }
 
@@ -50,11 +58,11 @@ namespace GeeUI.Views
             {
                 if (mouseOver)
                 {
-                    return InputManager.isLeftMousePressed() ? clickedNinepatch : hoverNinepatch;
+                    return InputManager.isLeftMousePressed() ? ninePatchClicked : ninePatchHover;
                 }
                 else
                 {
-                    return normalNinepatch;
+                    return ninePatchNormal;
                 }
             }
         }
@@ -62,12 +70,20 @@ namespace GeeUI.Views
         public ButtonView(View rootView, string text, Vector2 position, SpriteFont font)
             : base(rootView)
         {
-            normalNinepatch = GeeUI.ninePatch_btnDefault;
-            hoverNinepatch = GeeUI.ninePatch_btnHover;
-            clickedNinepatch = GeeUI.ninePatch_btnClicked;
-            this.text = text;
+            ninePatchNormal = GeeUI.ninePatch_btnDefault;
+            ninePatchHover = GeeUI.ninePatch_btnHover;
+            ninePatchClicked = GeeUI.ninePatch_btnClicked;
             this.position = position;
-            this.font = font;
+            TextView view = new TextView(this, text, new Vector2(0, 0), font);
+        }
+
+        public ButtonView(View rootview, View contentView, Vector2 position) : base(rootview)
+        {
+            ninePatchNormal = GeeUI.ninePatch_btnDefault;
+            ninePatchHover = GeeUI.ninePatch_btnHover;
+            ninePatchClicked = GeeUI.ninePatch_btnClicked;
+            this.position = position;
+            buttonContentview = contentView;
         }
 
         protected internal override void onMClick(Vector2 position, bool fromChild = false)
@@ -96,8 +112,17 @@ namespace GeeUI.Views
         protected internal override void Draw(SpriteBatch spriteBatch)
         {
             NinePatch patch = currentNinepatch;
-            patch.Draw(spriteBatch, absolutePosition, (int)font.MeasureString(text).X, (int)font.MeasureString(text).Y);
-            spriteBatch.DrawString(font, text, new Vector2(absolutePosition.X + patch.leftWidth, absolutePosition.Y + patch.topHeight), textColor);
+            int width = (int)(buttonContentview != null ? buttonContentview.BoundBox.Width : 0);
+            int height = (int)(buttonContentview != null ? buttonContentview.BoundBox.Height : 0);
+            patch.Draw(spriteBatch, absolutePosition, width, height);
+
+            View childView = buttonContentview;
+            if (childView != null)
+            {
+                childView.x = patch.leftWidth;
+                childView.y = patch.topHeight;
+            }
+
             base.Draw(spriteBatch);
         }
     }

@@ -54,21 +54,16 @@ namespace GeeUITestBed
 
 
             WindowView window = new WindowView(GeeUI.GeeUI.rootView, new Vector2(10, 10), font);
-            window.windowText = "WindowView.";
+            window.windowText = "SquareRoot appreciation station";
 
             PanelView panel2 = new PanelView(window, new Vector2(0, 0));
             panel2.width = 500;
             panel2.height = 300;
 
-            ButtonView button_depth0_container = new ButtonView(panel2, "Add a WindowView", new Vector2(1, 1), font);
+            TextFieldView textField = new TextFieldView(panel2, new Vector2(50, 50), font);
+            textField.width = 203;
+            textField.height = 100;
 
-            button_depth0_container.onMouseClick += new View.MouseClickEventHandler((object sender, EventArgs e) =>
-            {
-                WindowView view = new WindowView(panel2, new Vector2(20, 20), font);
-                view.windowText = "efeX is a fag";
-                ButtonView buttonView = new ButtonView(view, "Close WindowView", new Vector2(0, 0), font);
-                buttonView.onMouseClick += new View.MouseClickEventHandler((object sender2, EventArgs e2) => { panel2.removeChild(view); });
-            });
             // TODO: use this.Content to load your game content here
         }
 

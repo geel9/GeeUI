@@ -13,8 +13,16 @@ using GeeUI.Structs;
 using GeeUI.Managers;
 namespace GeeUI
 {
+    public delegate void OnKeyPressed(string keyPressed, Keys key);
+    public delegate void OnKeyReleased(string keyReleased, Keys key);
+    public delegate void OnKeyContinuallyPressed(string keyContinuallyPressed, Keys key);
+
     public static class GeeUI
     {
+        public static event OnKeyPressed OnKeyPressedHandler;
+        public static event OnKeyReleased OnKeyReleasedHandler;
+        public static event OnKeyContinuallyPressed OnKeyContinuallyPressedHandler;
+
         public static Texture2D white;
         public static Effect circleShader;
 
@@ -35,6 +43,42 @@ namespace GeeUI
         public static NinePatch ninePatch_windowUnselected = new NinePatch();
 
         private static InputManager inputManager = new InputManager();
+
+        internal static void InitializeKeybindings()
+        {
+            string[] toBindUpper = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ) ! @ # $ % ^ & * ( ? > < \" : } { _ + 0 1 2 3 4 5 6 7 8 9       ".Split(' ');
+            string[] toBindLower = "a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9 / . , ' ; ] [ - = 0 1 2 3 4 5 6 7 8 9       ".Split(' ');
+            Keys[] toBind = {Keys.A, Keys.B, Keys.C, Keys.D, Keys.E, Keys.F, Keys.G, Keys.H, Keys.I, Keys.J, Keys.K, Keys.L, Keys.M, Keys.N, Keys.O, Keys.P, Keys.Q, Keys.R, Keys.S, Keys.T, Keys.U, Keys.V, Keys.W, Keys.X, Keys.Y, Keys.Z
+                            , Keys.D0, Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.OemQuestion, Keys.OemPeriod, Keys.OemComma, Keys.OemQuotes,
+                            Keys.OemSemicolon, Keys.OemCloseBrackets, Keys.OemOpenBrackets, Keys.OemMinus, Keys.OemPlus, Keys.NumPad0, Keys.NumPad1, Keys.NumPad2, Keys.NumPad3, Keys.NumPad4, Keys.NumPad5, Keys.NumPad6, Keys.NumPad7, Keys.NumPad8, Keys.NumPad9
+                            , Keys.Space, Keys.Left, Keys.Right, Keys.Up, Keys.Down, Keys.Enter, Keys.Back};
+
+            for (int i = 0; i < toBindUpper.Length; i++)
+            {
+                String upper = toBindUpper[i];
+                String lower = toBindLower[i];
+                Keys bind = toBind[i];
+                
+                InputManager.BindKey(() =>
+                {
+                    bool shiftHeld = InputManager.isKeyPressed(Keys.LeftShift) || InputManager.isKeyPressed(Keys.RightShift);
+                    if (OnKeyPressedHandler == null) return;
+                    OnKeyPressedHandler(shiftHeld ? upper : lower, bind);
+                }, bind);
+                InputManager.BindKey(() =>
+                {
+                    bool shiftHeld = InputManager.isKeyPressed(Keys.LeftShift) || InputManager.isKeyPressed(Keys.RightShift);
+                    if (OnKeyReleasedHandler == null) return;
+                    OnKeyReleasedHandler(shiftHeld ? upper : lower, bind);
+                }, bind, false, false);
+                InputManager.BindKey(() =>
+                {
+                    bool shiftHeld = InputManager.isKeyPressed(Keys.LeftShift) || InputManager.isKeyPressed(Keys.RightShift);
+                    if (OnKeyContinuallyPressedHandler == null) return;
+                    OnKeyContinuallyPressedHandler(shiftHeld ? upper : lower, bind);
+                }, bind, true);
+            }
+        }
 
         public static void Initialize(Game theGame)
         {
@@ -69,7 +113,14 @@ namespace GeeUI
             ninePatch_btnClicked.LoadFromTexture(btnClicked);
             ninePatch_btnHover.LoadFromTexture(btnHover);
 
-            InputManager.BindMouse(() => handleClick(rootView, InputManager.GetMousePos()), MouseButton.Left);
+            InitializeKeybindings();
+
+            InputManager.BindMouse(() =>
+            {
+                handleClick(rootView, InputManager.GetMousePos());
+                //When we click, we want to re-evaluate what control the mouse is over.
+                handleMouseMovement(rootView, InputManager.GetMousePos());
+            }, MouseButton.Left);
             InputManager.BindMouse(() => handleMouseMovement(rootView, InputManager.GetMousePos()), MouseButton.Movement);
         }
 

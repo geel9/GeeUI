@@ -28,6 +28,8 @@ namespace GeeUI.Views
         public bool selected = false;
         public bool active = true;
 
+        public int numChildrenAllowed = -1;
+
         private bool _mouseOver = false;
         public bool mouseOver
         {
@@ -150,13 +152,17 @@ namespace GeeUI.Views
         {
             if (parentView != null)
                 parentView.addChild(this);
-            else
-                throw new Exception("You cannot create a View without a parent; please use GeeUI.rootView for what you want.");
         }
 
         #region Child management
+    
         public void addChild(View child)
         {
+            //Ensure that a child can only belong to one View ever.
+            if (children.Length + 1 > numChildrenAllowed && numChildrenAllowed != -1)
+                throw new Exception("You have attempted to add too many child Views to this View.");
+            if (child.parentView != null)
+                child.parentView.removeChild(child);
             child.parentView = this;
             child.thisDepth = childrenDepth++;
             _children.Add(child);
@@ -215,7 +221,7 @@ namespace GeeUI.Views
                 childrenDepth++;
             }
         }
-       
+
         #endregion
 
         #region Virtual methods/events
@@ -274,7 +280,7 @@ namespace GeeUI.Views
         protected internal virtual void Draw(SpriteBatch spriteBatch)
         {
         }
-        
+
         #endregion
     }
 }
