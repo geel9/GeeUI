@@ -331,6 +331,49 @@ namespace GeeUI.Views
         protected internal override void onMClick(Vector2 position, bool fromChild = false)
         {
             selected = true;
+
+            string[] lines = textLines;
+
+            NinePatch patch = selected ? ninePatchSelected : ninePatchDefault;
+
+            Vector2 topLeftContentPos = absolutePosition + new Vector2(patch.leftWidth, patch.topHeight);
+            Vector2 actualClickPos = position - topLeftContentPos;
+
+            string actualText = "";
+
+            for (int y = offsetY; y < lines.Length; y++)
+            {
+                int textHeight = (int)textInputFont.MeasureString(actualText + lines[y]).Y;
+                if (textHeight >= actualClickPos.Y)
+                {
+                    cursorY = y;
+                    
+                    string line = lines[y];
+
+                    //No need to make another variable
+                    actualText = "";
+
+                    bool setX = false;
+
+                    for (int x = offsetX; x < line.Length; x++)
+                    {
+                        actualText += line[x];
+                        int textWidth = (int)textInputFont.MeasureString(actualText).X;
+                        if (textWidth >= actualClickPos.X)
+                        {
+                            cursorX = x;
+                            setX = true;
+                            break;
+                        }
+                    }
+
+                    if (!setX) cursorX = line.Length;
+
+                    break;
+                }
+                actualText += lines[y] + "\n";
+            }
+
             base.onMClick(position);
         }
         protected internal override void onMClickAway(bool fromChild = false)
@@ -379,7 +422,9 @@ namespace GeeUI.Views
             {
                 string line = lines[i];
                 bool addNewline = (i < cursorY - 1) || (i == cursorY && line.Length == 0);
+                bool addSpace = (i == offsetY && line.Length == 0);
                 line += (addNewline ? "\n" : "");
+                line += (addSpace ? " " : "");
                 totalLine += line;
             }
 
@@ -395,6 +440,7 @@ namespace GeeUI.Views
                 doingDelimiter = !doingDelimiter;
             }
             if (doingDelimiter && selected)
+                //spriteBatch.DrawString(textInputFont, "|", new Vector2(xDrawPos - 1, yDrawPos), Color.Black);
                 DrawManager.Draw_Box(new Vector2(xDrawPos, yDrawPos + 3), new Vector2(xDrawPos + 1, yDrawPos + 15), Color.Black, spriteBatch);
             //DrawManager.Draw_Circle(new Vector2(xDrawPos, yDrawPos), 3f, Color.Red, Color.Black, spriteBatch);
             base.Draw(spriteBatch);

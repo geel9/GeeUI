@@ -54,7 +54,7 @@ namespace GeeUITestBed
 
 
             WindowView window = new WindowView(GeeUI.GeeUI.rootView, new Vector2(10, 10), font);
-            window.windowText = "SquareRoot appreciation station";
+            window.windowText = "Choosing cursor position via mouse";
 
             PanelView panel2 = new PanelView(window, new Vector2(0, 0));
             panel2.width = 500;
