@@ -30,7 +30,7 @@ namespace GeeUI.Views
 
         public int numChildrenAllowed = -1;
 
-        private bool _mouseOver = false;
+        protected internal bool _mouseOver = false;
         public bool mouseOver
         {
             get
@@ -155,12 +155,14 @@ namespace GeeUI.Views
         }
 
         #region Child management
-    
+
         public void addChild(View child)
         {
-            //Ensure that a child can only belong to one View ever.
+
             if (children.Length + 1 > numChildrenAllowed && numChildrenAllowed != -1)
                 throw new Exception("You have attempted to add too many child Views to this View.");
+
+            //Ensure that a child can only belong to one View ever.
             if (child.parentView != null)
                 child.parentView.removeChild(child);
             child.parentView = this;

@@ -42,6 +42,11 @@ namespace GeeUI
         public static NinePatch ninePatch_windowSelected = new NinePatch();
         public static NinePatch ninePatch_windowUnselected = new NinePatch();
 
+        public static Texture2D texture_checkBoxDefault;
+        public static Texture2D texture_checkBoxSelected;
+        public static Texture2D texture_checkBoxDefaultChecked;
+        public static Texture2D texture_checkBoxSelectedChecked;
+
         private static InputManager inputManager = new InputManager();
 
         internal static void InitializeKeybindings()
@@ -58,7 +63,7 @@ namespace GeeUI
                 String upper = toBindUpper[i];
                 String lower = toBindLower[i];
                 Keys bind = toBind[i];
-                
+
                 InputManager.BindKey(() =>
                 {
                     bool shiftHeld = InputManager.isKeyPressed(Keys.LeftShift) || InputManager.isKeyPressed(Keys.RightShift);
@@ -100,6 +105,11 @@ namespace GeeUI
             Texture2D btnDefault = ConversionManager.bitmapToTexture(Resource1.btn_default_9);
             Texture2D btnClicked = ConversionManager.bitmapToTexture(Resource1.btn_clicked_9);
             Texture2D btnHover = ConversionManager.bitmapToTexture(Resource1.btn_hover_9);
+
+            texture_checkBoxDefault = ConversionManager.bitmapToTexture(Resource1.checkbox_default);
+            texture_checkBoxSelected = ConversionManager.bitmapToTexture(Resource1.checkbox_default_selected);
+            texture_checkBoxDefaultChecked = ConversionManager.bitmapToTexture(Resource1.checkbox_checked);
+            texture_checkBoxSelectedChecked = ConversionManager.bitmapToTexture(Resource1.checkbox_checked_selected);
 
             ninePatch_textFieldDefault.LoadFromTexture(textFieldDefault);
             ninePatch_textFieldSelected.LoadFromTexture(textFieldSelected);

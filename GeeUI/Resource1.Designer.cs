@@ -81,6 +81,34 @@ namespace GeeUI {
             }
         }
         
+        internal static System.Drawing.Bitmap checkbox_checked {
+            get {
+                object obj = ResourceManager.GetObject("checkbox_checked", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap checkbox_checked_selected {
+            get {
+                object obj = ResourceManager.GetObject("checkbox_checked_selected", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap checkbox_default {
+            get {
+                object obj = ResourceManager.GetObject("checkbox_default", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap checkbox_default_selected {
+            get {
+                object obj = ResourceManager.GetObject("checkbox_default_selected", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap textfield_default_9 {
             get {
                 object obj = ResourceManager.GetObject("textfield_default_9", resourceCulture);

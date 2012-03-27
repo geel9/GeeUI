@@ -53,16 +53,48 @@ namespace GeeUITestBed
             SpriteFont font = Content.Load<SpriteFont>("testFont");
 
 
-            WindowView window = new WindowView(GeeUI.GeeUI.rootView, new Vector2(10, 10), font);
-            window.windowText = "Choosing cursor position via mouse";
+            WindowView window = new WindowView(GeeUI.GeeUI.rootView, new Vector2(5, 5), font);
+            window.windowText = "Switching a view's parent";
 
             PanelView panel2 = new PanelView(window, new Vector2(0, 0));
-            panel2.width = 500;
-            panel2.height = 300;
+            panel2.width = 350;
+            panel2.height = 400;
 
-            TextFieldView textField = new TextFieldView(panel2, new Vector2(50, 50), font);
+            WindowView secondWindow = new WindowView(GeeUI.GeeUI.rootView, new Vector2(400, 5), font);
+            secondWindow.windowText = "Second window";
+
+            PanelView panel3 = new PanelView(secondWindow, new Vector2(0, 0));
+            panel3.width = 350;
+            panel3.height = 400;
+
+            WindowView childWindow = new WindowView(panel2, new Vector2(10, 10), font);
+            childWindow.windowText = "Child window";
+
+            PanelView childPanel = new PanelView(childWindow, new Vector2(0, 0));
+            childPanel.width = 210;
+            childPanel.height = 150;
+
+            TextFieldView textField = new TextFieldView(childPanel, new Vector2(0, 0), font);
             textField.width = 203;
             textField.height = 100;
+
+
+            ButtonView switchingButton = new ButtonView(childPanel, "Switch parents", new Vector2(0, 110), font);
+
+            switchingButton.onMouseClick += new View.MouseClickEventHandler((object sender, EventArgs e) =>
+            {
+                if (childWindow.parentView == panel2)
+                    childWindow.setParent(panel3);
+                else
+                    childWindow.setParent(panel2);
+            });
+
+
+            CheckBoxView check = new CheckBoxView(childPanel, new Vector2(0, 135), "Enable button", font);
+            check.onMouseClick += new View.MouseClickEventHandler((object sender, EventArgs e) =>
+            {
+                switchingButton.active = check.isChecked;
+            });
 
             // TODO: use this.Content to load your game content here
         }
