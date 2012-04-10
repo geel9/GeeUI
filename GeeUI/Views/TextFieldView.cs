@@ -18,6 +18,7 @@ namespace GeeUI.Views
         public SpriteFont textInputFont;
 
         public bool multiLine = true;
+        public bool editable = true;
 
         private string _text = "";
         public string text
@@ -145,7 +146,7 @@ namespace GeeUI.Views
         }
         void keyPressedHandler(string keyPressed, Keys key)
         {
-            if (!selected) return;
+            if (!selected || !editable) return;
             if (buttonHeld != key)
             {
                 buttonHeld = key;
