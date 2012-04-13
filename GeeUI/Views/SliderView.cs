@@ -24,11 +24,32 @@ namespace GeeUI.Views
 
         private bool clicked = false;
 
+        private bool _drawText = false;
+        public bool drawText
+        {
+            get
+            {
+                return _drawText && textFont != null;
+            }
+            set
+            {
+                //Only let text be drawn if the user has set the font.
+                _drawText = textFont != null && value;
+                if (textFont == null)
+                {
+                    throw new Exception("Cannot set SliderView.drawText to true unless textFont is set.");
+                }       
+            }
+        }
+
+        public SpriteFont textFont = null;
+        public Color textColor = Color.Black;
+
         public int currentValue
         {
             get
             {
-                float percent = (float)sliderPosition / (float)width;
+                float percent = (float)(sliderPosition) / (float)width;
                 return (int)(min + ((float)(max - min) * percent));
             }
         }
@@ -122,7 +143,15 @@ namespace GeeUI.Views
         {
             //We want to preserve the slider skin's original height.
             sliderRange.Draw(spriteBatch, absolutePosition, width, sliderRange.bottomMostPatch - sliderRange.topMostPatch);
-            spriteBatch.Draw(curSliderTexture, new Vector2(absoluteX + sliderRange.leftWidth - (curSliderTexture.Width) + sliderPosition, absoluteY), Color.White);
+            spriteBatch.Draw(curSliderTexture, new Vector2(absoluteX + sliderRange.leftWidth - (curSliderTexture.Width) + sliderPosition, absoluteY), null, Color.White, 0f, new Vector2(curSliderTexture.Width / -2, 0), 1f, SpriteEffects.None, 0f);
+            if (drawText)
+            {
+                int drawX = absoluteX + (sliderRange.leftWidth + width + sliderRange.rightWidth) / 2;
+                int drawY = absoluteY;
+                Vector2 offset = textFont.MeasureString(currentValue.ToString());
+                offset.X = (int)(offset.X / 2);
+                spriteBatch.DrawString(textFont, currentValue.ToString(), new Vector2(drawX, drawY), textColor, 0f, offset, 1f, SpriteEffects.None, 0f);
+            }
             base.Draw(spriteBatch);
         }
     }

@@ -21,6 +21,11 @@ namespace GeeUI.Views
         protected internal Vector2 lastMousePosition = Vector2.Zero;
         protected internal Vector2 mouseSelectedOffset = Vector2.Zero;
 
+        /// <summary>
+        /// If true, the window can be dragged by the user.
+        /// </summary>
+        public bool draggable = true;
+
         public View windowContentView
         {
             get
@@ -88,6 +93,7 @@ namespace GeeUI.Views
 
         protected internal void FollowMouse()
         {
+            if (!draggable) return;
             Vector2 newMousePosition = InputManager.GetMousePosV();
             if (selectedOffChildren && selected && InputManager.isLeftMousePressed())
             {

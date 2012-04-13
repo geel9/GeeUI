@@ -216,13 +216,13 @@ namespace GeeUI.Views
                         moveCursorY(1);
                         break;
                     case Keys.Enter:
-                        appendText("\n");
+                        appendTextCursor("\n");
                         break;
                     case Keys.Space:
-                        appendText(" ");
+                        appendTextCursor(" ");
                         break;
                     default:
-                        appendText(keyPressed);
+                        appendTextCursor(keyPressed);
                         break;
                 }
             }
@@ -322,7 +322,7 @@ namespace GeeUI.Views
             if (maxCharY < yDiff) offsetY++;
         }
 
-        private void appendText(string text)
+        private void appendTextCursor(string text)
         {
             string[] lines = textLines;
             string curLine = lines[cursorY];
@@ -331,6 +331,12 @@ namespace GeeUI.Views
             lines[cursorY] = before + text + after;
             textLines = lines;
             moveCursorX(text.Length);
+        }
+
+        public void appendText(string text)
+        {
+            this.text += text;
+            //reEvaluateOffset();
         }
 
         public Vector2 getMouseTextPos(Vector2 position)

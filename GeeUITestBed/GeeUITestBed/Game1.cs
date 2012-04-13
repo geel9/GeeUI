@@ -69,10 +69,12 @@ namespace GeeUITestBed
 
             WindowView childWindow = new WindowView(panel2, new Vector2(10, 10), font);
             childWindow.windowText = "Child window";
+            childWindow.draggable = false;
+
 
             PanelView childPanel = new PanelView(childWindow, new Vector2(0, 0));
             childPanel.width = 210;
-            childPanel.height = 150;
+            childPanel.height = 160;
 
             TextFieldView textField = new TextFieldView(childPanel, new Vector2(0, 0), font);
             textField.width = 203;
@@ -96,13 +98,10 @@ namespace GeeUITestBed
                 switchingButton.active = check.isChecked;
             });*/
 
-            SliderView slider = new SliderView(childPanel, new Vector2(0, 135), 0, 10);
+            SliderView slider = new SliderView(childPanel, new Vector2(0, 150), 0, 10);
             slider.width = 100;
-
-            slider.onSliderValueChanged += new SliderView.SliderValueChangedHandler((object sender, EventArgs e) =>
-            {
-                textField.text = slider.currentValue.ToString();
-            });
+            slider.textFont = font;
+            slider.drawText = true;
 
             // TODO: use this.Content to load your game content here
         }
