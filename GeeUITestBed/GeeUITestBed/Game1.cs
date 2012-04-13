@@ -25,7 +25,7 @@ namespace GeeUITestBed
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-
+            graphics.PreferMultiSampling = true;
         }
 
         /// <summary>
@@ -96,8 +96,13 @@ namespace GeeUITestBed
                 switchingButton.active = check.isChecked;
             });*/
 
-            SliderView slider = new SliderView(childPanel, new Vector2(0, 135), 0, 100);
+            SliderView slider = new SliderView(childPanel, new Vector2(0, 135), 0, 10);
             slider.width = 100;
+
+            slider.onSliderValueChanged += new SliderView.SliderValueChangedHandler((object sender, EventArgs e) =>
+            {
+                textField.text = slider.currentValue.ToString();
+            });
 
             // TODO: use this.Content to load your game content here
         }

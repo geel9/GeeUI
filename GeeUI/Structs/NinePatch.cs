@@ -59,6 +59,11 @@ namespace GeeUI.Structs
             texture = null;
         }
 
+        /// <summary>
+        /// Method to determine if a texture has ninepatch data inside of it
+        /// </summary>
+        /// <param name="texture">The texture to test against</param>
+        /// <returns>True if the texture is compatible with ninepatches, false otherwise</returns>
         public static bool isAlreadyNinepatch(Texture2D texture)
         {
             Microsoft.Xna.Framework.Color[] data = new Microsoft.Xna.Framework.Color[texture.Width * texture.Height];
@@ -121,6 +126,10 @@ namespace GeeUI.Structs
             return true;
         }
 
+        /// <summary>
+        /// Load the NinePatch data from a texture.
+        /// </summary>
+        /// <param name="texture">The NinePatch-compatible texture to load from.</param>
         public void LoadFromTexture(Texture2D texture)
         {
             leftMostPatch = -1;
@@ -160,7 +169,15 @@ namespace GeeUI.Structs
             }
         }
 
-        public void Draw(SpriteBatch sb, Vector2 position, int contentWidth, int contentHeight)
+        /// <summary>
+        /// Draws the ninepatch at the specified point
+        /// </summary>
+        /// <param name="sb">The spritebatch to use for drawing</param>
+        /// <param name="position">The position to draw it at (top left)</param>
+        /// <param name="contentWidth">The width of the content inside the Ninepatch</param>
+        /// <param name="contentHeight">The height of the content inside the Ninepatch</param>
+        /// <param name="angle">The angle in degrees to rotate the ninepatch.</param>
+        public void Draw(SpriteBatch sb, Vector2 position, int contentWidth, int contentHeight, float angle = 0)
         {
             Rectangle topLeft = new Rectangle(1, 1, leftMostPatch - 1, topMostPatch - 1);
             Rectangle topMiddle = new Rectangle(leftMostPatch, 1, (rightMostPatch - leftMostPatch), topMostPatch - 1);
@@ -191,19 +208,42 @@ namespace GeeUI.Structs
             Vector2 drawBM = drawM + new Vector2(0, leftMiddleHeight * scaleMiddleByVertically);
             Vector2 drawBR = drawR + new Vector2(0, leftMiddleHeight * scaleMiddleByVertically);
 
-            sb.Draw(texture, drawTL, topLeft, Color.White);
-            sb.Draw(texture, drawT, topMiddle, Color.White, 0f, Vector2.Zero, new Vector2(scaleMiddleByHorizontally, 1), SpriteEffects.None, 0f);
-            sb.Draw(texture, drawTR, topRight, Color.White);
+            drawTL = rotateAroundOrigin(drawTL, position, angle);
+            drawT = rotateAroundOrigin(drawT, position, angle);
+            drawTR = rotateAroundOrigin(drawTR, position, angle);
 
-            sb.Draw(texture, drawL, Left, Color.White, 0f, Vector2.Zero, new Vector2(1, scaleMiddleByVertically), SpriteEffects.None, 0f);
-            sb.Draw(texture, drawM, Middle, Color.White, 0f, Vector2.Zero, new Vector2(scaleMiddleByHorizontally, scaleMiddleByVertically), SpriteEffects.None, 0f);
-            sb.Draw(texture, drawR, Right, Color.White, 0f, Vector2.Zero, new Vector2(1, scaleMiddleByVertically), SpriteEffects.None, 0f);
+            drawL = rotateAroundOrigin(drawL, position, angle);
+            drawM = rotateAroundOrigin(drawM, position, angle);
+            drawR = rotateAroundOrigin(drawR, position, angle);
 
-            sb.Draw(texture, drawBL, bottomLeft, Color.White);
-            sb.Draw(texture, drawBM, bottomMiddle, Color.White, 0f, Vector2.Zero, new Vector2(scaleMiddleByHorizontally, 1), SpriteEffects.None, 0f);
-            sb.Draw(texture, drawBR, bottomRight, Color.White);
+            drawBL = rotateAroundOrigin(drawBL, position, angle);
+            drawBM = rotateAroundOrigin(drawBM, position, angle);
+            drawBR = rotateAroundOrigin(drawBR, position, angle);
+
+            float angR = (float)ConversionManager.DegreeToRadians(angle);
+
+            sb.Draw(texture, drawTL, topLeft, Color.White, angR, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+            sb.Draw(texture, drawT, topMiddle, Color.White, angR, Vector2.Zero, new Vector2(scaleMiddleByHorizontally, 1), SpriteEffects.None, 0f);
+            sb.Draw(texture, drawTR, topRight, Color.White, angR, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+
+            sb.Draw(texture, drawL, Left, Color.White, angR, Vector2.Zero, new Vector2(1, scaleMiddleByVertically), SpriteEffects.None, 0f);
+            sb.Draw(texture, drawM, Middle, Color.White, angR, Vector2.Zero, new Vector2(scaleMiddleByHorizontally, scaleMiddleByVertically), SpriteEffects.None, 0f);
+            sb.Draw(texture, drawR, Right, Color.White, angR, Vector2.Zero, new Vector2(1, scaleMiddleByVertically), SpriteEffects.None, 0f);
+
+            sb.Draw(texture, drawBL, bottomLeft, Color.White, angR, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+            sb.Draw(texture, drawBM, bottomMiddle, Color.White, angR, Vector2.Zero, new Vector2(scaleMiddleByHorizontally, 1), SpriteEffects.None, 0f);
+            sb.Draw(texture, drawBR, bottomRight, Color.White, angR, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
         }
 
+        /// <summary>
+        /// Draws a box where the content of a NinePatch will be placed.
+        /// Does not draw the NinePatch.
+        /// </summary>
+        /// <param name="sb">The drawing SpriteBatch</param>
+        /// <param name="position">The position to draw (top left)</param>
+        /// <param name="contentWidth">The width of the content inside the Ninepatch</param>
+        /// <param name="contentHeight">The height of the content inside the Ninepatch</param>
+        /// <param name="drawColor">The color to draw </param>
         public void DrawContent(SpriteBatch sb, Vector2 position, int contentWidth, int contentHeight, Color drawColor)
         {
             Rectangle topLeft = new Rectangle(1, 1, leftMostPatch - 1, topMostPatch - 1);
@@ -228,6 +268,12 @@ namespace GeeUI.Structs
             DrawManager.Draw_Box(drawM, bottomRight, drawColor, sb, 0f, 150);
         }
 
+        /// <summary>
+        /// Gets the center of a NinePatch with the defined width and height
+        /// </summary>
+        /// <param name="contentWidth">The width of the NinePatch content</param>
+        /// <param name="contentHeight">The height of the NinePatch content</param>
+        /// <returns></returns>
         public Vector2 getCenter(int contentWidth, int contentHeight)
         {
             Rectangle topLeft = new Rectangle(1, 1, leftMostPatch - 1, topMostPatch - 1);
@@ -247,6 +293,46 @@ namespace GeeUI.Structs
             Vector2 drawMMiddle = new Vector2(topLeft.Width, topLeft.Height);
             drawMMiddle += new Vector2(topMiddleWidth * (scaleMiddleByHorizontally / 2), leftMiddleHeight * (scaleMiddleByVertically / 2));
             return drawMMiddle;
+        }
+
+        /// <summary>
+        /// Rotates a point around a specified origin with the specified angle
+        /// </summary>
+        /// <param name="point">The point to rotate</param>
+        /// <param name="origin">The rotation point of the point</param>
+        /// <param name="angle">The angle in degrees of the angle to rotate the point by.</param>
+        /// <returns></returns>
+        public static Vector2 rotateAroundOrigin(Vector2 point, Vector2 origin, double angle)
+        {
+            Vector2 real = point - origin;
+            Vector2 ret = Vector2.Zero;
+
+            //We need to use radians for Math.* functions
+            angle = ConversionManager.DegreeToRadians(angle);
+            ret.X = (float)((real.X * Math.Cos(angle)) - (real.Y * Math.Sin(angle)));
+            ret.Y = (float)((real.X * Math.Sin(angle)) + (real.Y * Math.Cos(angle)));
+
+            ret += origin;
+            return ret;
+        }
+
+        /// <summary>
+        /// Rotates a point with the specified angle
+        /// </summary>
+        /// <param name="point">The point to rotate</param>
+        /// <param name="angle">The angle in degrees of the angle to rotate the point by.</param>
+        /// <returns></returns>
+        public static Vector2 rotatePoint(Vector2 point, double angle)
+        {
+            Vector2 real = point;
+            Vector2 ret = Vector2.Zero;
+
+            //We need to use radians for Math.* functions
+            angle = ConversionManager.DegreeToRadians(angle);
+            ret.X = (float)((real.X * Math.Cos(angle)) - (real.Y * Math.Sin(angle)));
+            ret.Y = (float)((real.X * Math.Sin(angle)) + (real.Y * Math.Cos(angle)));
+
+            return ret;
         }
     }
 }

@@ -38,6 +38,7 @@ namespace GeeUI.Views
         private Vector2 selectionStart = new Vector2(-1), selectionEnd = new Vector2(-1);
 
         private int buttonHeldTime = 0;
+
         //How long to press before repeating
         private int buttonHeldTimePreRepeat = 2;
         private string buttonHeldString = "";
@@ -182,7 +183,7 @@ namespace GeeUI.Views
                 switch (key)
                 {
                     case Keys.Back:
-                        string[] lines = textLines;
+                       string[] lines = textLines;
                         string line = lines[cursorY];
                         int curPos = cursorX;
                         for (int i = 0; i < cursorY; i++)
@@ -276,6 +277,8 @@ namespace GeeUI.Views
 
         private void reEvaluateOffset()
         {
+            if(selectionStart == selectionEnd)
+                selectionEnd = selectionStart = Vector2.Zero;
             string ret = "";
             string[] lines = textLines;
             NinePatch patch = selected ? ninePatchSelected : ninePatchDefault;
@@ -455,6 +458,7 @@ namespace GeeUI.Views
             }
             base.Update(theTime);
         }
+
 
         protected internal override void Draw(SpriteBatch spriteBatch)
         {

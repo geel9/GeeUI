@@ -98,6 +98,10 @@ namespace GeeUI
             GeeUI.theGame = theGame;
             white = new Texture2D(theGame.GraphicsDevice, 1, 1);
 
+            Vector2 test = new Vector2(15, 5);
+            Vector2 origin = new Vector2(2, 2);
+            Vector2 ret = NinePatch.rotateAroundOrigin(test, origin, 45);
+
             white.SetData<Color>(new Color[] { Color.White });
             rootView.width = theGame.Window.ClientBounds.Width;
             rootView.height = theGame.Window.ClientBounds.Height;

@@ -11,6 +11,10 @@ namespace GeeUI.Views
 {
     public class SliderView : View
     {
+        public delegate void SliderValueChangedHandler(object sender, EventArgs e);
+
+        public event SliderValueChangedHandler onSliderValueChanged;
+
         public Texture2D sliderDefault;
         public Texture2D sliderSelected;
 
@@ -43,7 +47,7 @@ namespace GeeUI.Views
         {
             get
             {
-                return new Rectangle(x, y, sliderRange.leftWidth + sliderRange.rightWidth + width, sliderRange.texture.Height);
+                return new Rectangle(x, y, sliderRange.leftWidth + sliderRange.rightWidth + width, (int)MathHelper.Max(sliderRange.texture.Height, sliderDefault.Height));
             }
         }
 
@@ -54,12 +58,15 @@ namespace GeeUI.Views
             sliderDefault = GeeUI.texture_sliderDefault;
             sliderSelected = GeeUI.texture_sliderSelected;
 
+            this.min = min;
+            this.max = max;
+
             this.position = position;
         }
 
         protected internal override void onMClick(Vector2 position, bool fromChild = false)
         {
-            sliderPosition = (int)(position.X - absoluteX + sliderRange.leftWidth);
+            sliderCalc(position);
             clicked = true;
             base.onMClick(position);
         }
@@ -72,35 +79,33 @@ namespace GeeUI.Views
         protected internal override void onMOver(bool fromChild = false)
         {
             Vector2 position = InputManager.GetMousePosV();
-            if (clicked)
-            {
-                if (InputManager.isLeftMousePressed())
-                {
-                    sliderPosition = (int)(position.X - absoluteX + sliderRange.leftWidth);
-                }
-                else
-                {
-                    clicked = false;
-                }
-            }
+            sliderCalc(position);
             base.onMOver();
         }
         protected internal override void onMOff(bool fromChild = false)
         {
             Vector2 position = InputManager.GetMousePosV();
+            sliderCalc(position);
+            base.onMOff();
+        }
+
+        private void sliderCalc(Vector2 position)
+        {
             if (clicked)
             {
                 if (InputManager.isLeftMousePressed())
                 {
-                    sliderPosition = (int)(position.X - absoluteX + sliderRange.leftWidth);
+                    sliderPosition = (int)MathHelper.Clamp((int)(position.X - absoluteX + sliderRange.leftWidth), 0, width);
+                    if (onSliderValueChanged != null)
+                        onSliderValueChanged(null, null);
                 }
                 else
                 {
                     clicked = false;
                 }
             }
-            base.onMOff();
         }
+
 
         protected internal override void Update(GameTime theTime)
         {
