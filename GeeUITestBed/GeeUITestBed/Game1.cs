@@ -90,11 +90,14 @@ namespace GeeUITestBed
             });
 
 
-            CheckBoxView check = new CheckBoxView(childPanel, new Vector2(0, 135), "Enable button", font);
+            /*CheckBoxView check = new CheckBoxView(childPanel, new Vector2(0, 135), "Enable button", font);
             check.onMouseClick += new View.MouseClickEventHandler((object sender, EventArgs e) =>
             {
                 switchingButton.active = check.isChecked;
-            });
+            });*/
+
+            SliderView slider = new SliderView(childPanel, new Vector2(0, 135), 0, 100);
+            slider.width = 100;
 
             // TODO: use this.Content to load your game content here
         }

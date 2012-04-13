@@ -34,6 +34,7 @@ namespace GeeUI.Views
         }
 
         private int offsetX = 0, offsetY = 0, cursorX = 0, cursorY = 0;
+        private Vector2 selectionStart = new Vector2(-1), selectionEnd = new Vector2(-1);
 
         private int buttonHeldTime = 0;
         //How long to press before repeating
@@ -68,9 +69,9 @@ namespace GeeUI.Views
                     }
                     string retTest = ret + curLineRet + (y + 1 != lines.Length ? "\n" : "");
                     int maxHeight = (int)textInputFont.MeasureString(retTest).Y;
+                    ret += curLineRet + (y + 1 != lines.Length ? "\n" : "");
                     if (maxHeight >= allowedHeight)
                         break;
-                    ret += curLineRet + (y + 1 != lines.Length ? "\n" : "");
                 }
                 return ret;
             }
@@ -112,7 +113,6 @@ namespace GeeUI.Views
             }
         }
 
-
         public TextFieldView(View rootView, Vector2 position, SpriteFont textFont)
             : base(rootView)
         {
@@ -143,6 +143,7 @@ namespace GeeUI.Views
         {
             return false;
         }
+
         void keyPressedHandler(string keyPressed, Keys key)
         {
             if (!selected) return;
@@ -328,16 +329,16 @@ namespace GeeUI.Views
             moveCursorX(text.Length);
         }
 
-        protected internal override void onMClick(Vector2 position, bool fromChild = false)
+        public Vector2 getMouseTextPos(Vector2 position)
         {
-            selected = true;
-
             string[] lines = textLines;
 
             NinePatch patch = selected ? ninePatchSelected : ninePatchDefault;
 
             Vector2 topLeftContentPos = absolutePosition + new Vector2(patch.leftWidth, patch.topHeight);
             Vector2 actualClickPos = position - topLeftContentPos;
+
+            Vector2 ret = new Vector2();
 
             string actualText = "";
 
@@ -346,8 +347,8 @@ namespace GeeUI.Views
                 int textHeight = (int)textInputFont.MeasureString(actualText + lines[y]).Y;
                 if (textHeight >= actualClickPos.Y)
                 {
-                    cursorY = y;
-                    
+                    ret.Y = y;
+
                     string line = lines[y];
 
                     //No need to make another variable
@@ -361,34 +362,80 @@ namespace GeeUI.Views
                         int textWidth = (int)textInputFont.MeasureString(actualText).X;
                         if (textWidth >= actualClickPos.X)
                         {
-                            cursorX = x;
+                            ret.X = x;
                             setX = true;
                             break;
                         }
                     }
 
-                    if (!setX) cursorX = line.Length;
+                    if (!setX)
+                        ret.X = line.Length;
 
                     break;
                 }
                 actualText += lines[y] + "\n";
             }
+            return ret;
+        }
+
+        protected internal override void onMClick(Vector2 position, bool fromChild = false)
+        {
+            selected = true;
+
+            Vector2 clickPos = getMouseTextPos(position);
+            cursorX = (int)clickPos.X;
+            cursorY = (int)clickPos.Y;
+
+            selectionStart = clickPos;
 
             base.onMClick(position);
         }
+
         protected internal override void onMClickAway(bool fromChild = false)
         {
             selected = false;
+            selectionEnd = selectionStart = new Vector2(-1);
             //base.onMClickAway();
         }
 
         protected internal override void onMOver(bool fromChild = false)
         {
+            if (selected && InputManager.isLeftMousePressed())
+            {
+                Vector2 clickPos = getMouseTextPos(InputManager.GetMousePosV());
+                selectionEnd = clickPos;
+            }
             base.onMOver();
         }
         protected internal override void onMOff(bool fromChild = false)
         {
             base.onMOff();
+        }
+
+        private Vector2 getDrawPosForCursorPos(int cursorX, int cursorY)
+        {
+            NinePatch patch = selected ? ninePatchSelected : ninePatchDefault;
+            string[] lines = textLines;
+
+            string totalLine = "";
+            for (int i = offsetY; i < cursorY && i < lines.Length; i++)
+            {
+                string line = lines[i];
+                bool addNewline = (i < cursorY - 1) || (i == cursorY && line.Length == 0);
+                bool addSpace = (line.Length == 0);
+                line += (addNewline ? "\n" : "");
+                line += (addSpace ? " " : "");
+                totalLine += line;
+            }
+
+            int yDrawPos = (int)(absolutePosition.Y + patch.topHeight + textInputFont.MeasureString(totalLine).Y);
+            string yDrawLine = lines[cursorY];
+            string cur = "";
+            for (int x = offsetX; x < cursorX && x < yDrawLine.Length; x++)
+                cur += yDrawLine[x];
+            int xDrawPos = (int)textInputFont.MeasureString(cur).X + (int)(absolutePosition.X + patch.leftWidth);
+
+            return new Vector2(xDrawPos, yDrawPos);
         }
 
         protected internal override void Update(GameTime theTime)
@@ -415,34 +462,33 @@ namespace GeeUI.Views
 
             spriteBatch.DrawString(textInputFont, offsetText, absolutePosition + new Vector2(patch.leftWidth, patch.topHeight), Color.Black);
 
-            string[] lines = textLines;
+            Vector2 drawPos = getDrawPosForCursorPos(cursorX, cursorY);
+            float xDrawPos = drawPos.X;
+            float yDrawPos = drawPos.Y;
 
-            string totalLine = "";
-            for (int i = offsetY; i < cursorY && i < lines.Length; i++)
+            if (selectionStart != new Vector2(-1) && selectionEnd != new Vector2(-1))
             {
-                string line = lines[i];
-                bool addNewline = (i < cursorY - 1) || (i == cursorY && line.Length == 0);
-                bool addSpace = (i == offsetY && line.Length == 0);
-                line += (addNewline ? "\n" : "");
-                line += (addSpace ? " " : "");
-                totalLine += line;
+                Vector2 start = selectionStart;
+                Vector2 end = selectionEnd;
+                if (selectionStart.Y > selectionEnd.Y || (selectionStart.Y == selectionEnd.Y && selectionStart.X > selectionEnd.X))
+                {
+                    //Need to swap the variables.
+                    Vector2 store = start;
+                    start = end;
+                    end = store;
+                }
+                Vector2 drawSS = getDrawPosForCursorPos((int)start.X, (int)start.Y);
+                Vector2 drawSE = getDrawPosForCursorPos((int)end.X, (int)end.Y);
+                spriteBatch.DrawString(textInputFont, "|", new Vector2(drawSS.X - 1, drawSS.Y), Color.Red);
+                spriteBatch.DrawString(textInputFont, "|", new Vector2(drawSE.X - 1, drawSE.Y), Color.Green);
             }
-
-            int yDrawPos = (int)(absolutePosition.Y + patch.topHeight + textInputFont.MeasureString(totalLine).Y);
-            string yDrawLine = lines[cursorY];
-            string cur = "";
-            for (int x = offsetX; x < cursorX && x < yDrawLine.Length; x++)
-                cur += yDrawLine[x];
-            int xDrawPos = (int)textInputFont.MeasureString(cur).X + (int)(absolutePosition.X + patch.leftWidth);
 
             if (delimiterTime++ % delimiterLimit == 0)
             {
                 doingDelimiter = !doingDelimiter;
             }
             if (doingDelimiter && selected)
-                //spriteBatch.DrawString(textInputFont, "|", new Vector2(xDrawPos - 1, yDrawPos), Color.Black);
-                DrawManager.Draw_Box(new Vector2(xDrawPos, yDrawPos + 3), new Vector2(xDrawPos + 1, yDrawPos + 15), Color.Black, spriteBatch);
-            //DrawManager.Draw_Circle(new Vector2(xDrawPos, yDrawPos), 3f, Color.Red, Color.Black, spriteBatch);
+                spriteBatch.DrawString(textInputFont, "|", new Vector2(xDrawPos - 1, yDrawPos), Color.Black);
             base.Draw(spriteBatch);
         }
     }

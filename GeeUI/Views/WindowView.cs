@@ -82,8 +82,8 @@ namespace GeeUI.Views
         {
             this.position = position;
             this.windowTextFont = windowTextFont;
-            ninePatchNormal = GeeUI.ninePatch_textFieldDefault;
-            ninePatchSelected = GeeUI.ninePatch_textFieldSelected;
+            ninePatchNormal = GeeUI.ninePatch_windowUnselected;
+            ninePatchSelected = GeeUI.ninePatch_windowSelected;
         }
 
         protected internal void FollowMouse()

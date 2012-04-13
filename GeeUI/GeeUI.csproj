@@ -80,6 +80,7 @@
     <Compile Include="Views\CheckBoxView.cs" />
     <Compile Include="Views\ImageView.cs" />
     <Compile Include="Views\PanelView.cs" />
+    <Compile Include="Views\SliderView.cs" />
     <Compile Include="Views\TextFieldView.cs" />
     <Compile Include="Views\TextView.cs" />
     <Compile Include="Views\View.cs" />
@@ -95,25 +96,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\textfield_selected.9.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\textfield_selected_right.9.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\textfield_selected_wrong.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\window_selected.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\window_unselected.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\window_unselected.9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\window_selected.9.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\btn_default.9.png" />
@@ -135,6 +121,14 @@
     <Content Include="Resources\checkbox_checked_selected.png" />
     <Content Include="Resources\checkbox_default.png" />
     <Content Include="Resources\checkbox_default_selected.png" />
+    <None Include="Resources\panel_unselected.png" />
+    <None Include="Resources\panel_selected.png" />
+    <None Include="Resources\window_unselected.9.png" />
+    <None Include="Resources\window_selected.9.png" />
+    <None Include="Resources\sliderRange.9.png" />
+    <None Include="Resources\sliderSelected.png" />
+    <None Include="Resources\sliderRange.png" />
+    <None Include="Resources\slider.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

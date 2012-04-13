@@ -35,8 +35,8 @@ namespace GeeUI.Views
 
         public PanelView(View rootView, Vector2 position) : base(rootView)
         {
-            selectedNinepatch = GeeUI.ninePatch_windowSelected;
-            unselectedNinepatch = GeeUI.ninePatch_windowUnselected;
+            selectedNinepatch = GeeUI.ninePatch_panelSelected;
+            unselectedNinepatch = GeeUI.ninePatch_panelUnselected;
             this.position = position;
         }
 

@@ -109,6 +109,41 @@ namespace GeeUI {
             }
         }
         
+        internal static System.Drawing.Bitmap panel_selected_9 {
+            get {
+                object obj = ResourceManager.GetObject("panel_selected_9", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap panel_unselected_9 {
+            get {
+                object obj = ResourceManager.GetObject("panel_unselected_9", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap slider {
+            get {
+                object obj = ResourceManager.GetObject("slider", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap sliderRange_9 {
+            get {
+                object obj = ResourceManager.GetObject("sliderRange_9", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap sliderSelected {
+            get {
+                object obj = ResourceManager.GetObject("sliderSelected", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap textfield_default_9 {
             get {
                 object obj = ResourceManager.GetObject("textfield_default_9", resourceCulture);

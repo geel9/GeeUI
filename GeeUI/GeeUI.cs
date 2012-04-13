@@ -42,10 +42,18 @@ namespace GeeUI
         public static NinePatch ninePatch_windowSelected = new NinePatch();
         public static NinePatch ninePatch_windowUnselected = new NinePatch();
 
+        public static NinePatch ninePatch_panelSelected = new NinePatch();
+        public static NinePatch ninePatch_panelUnselected = new NinePatch();
+
         public static Texture2D texture_checkBoxDefault;
         public static Texture2D texture_checkBoxSelected;
         public static Texture2D texture_checkBoxDefaultChecked;
         public static Texture2D texture_checkBoxSelectedChecked;
+
+
+        public static Texture2D texture_sliderSelected;
+        public static Texture2D texture_sliderDefault;
+        public static NinePatch ninePatch_sliderRange = new NinePatch();
 
         private static InputManager inputManager = new InputManager();
 
@@ -102,9 +110,18 @@ namespace GeeUI
             Texture2D windowSelected = ConversionManager.bitmapToTexture(Resource1.window_selected_9);
             Texture2D windowUnselected = ConversionManager.bitmapToTexture(Resource1.window_unselected_9);
 
+            Texture2D panelSelected = ConversionManager.bitmapToTexture(Resource1.panel_selected_9);
+            Texture2D panelUnselected = ConversionManager.bitmapToTexture(Resource1.panel_unselected_9);
+
             Texture2D btnDefault = ConversionManager.bitmapToTexture(Resource1.btn_default_9);
             Texture2D btnClicked = ConversionManager.bitmapToTexture(Resource1.btn_clicked_9);
             Texture2D btnHover = ConversionManager.bitmapToTexture(Resource1.btn_hover_9);
+
+            Texture2D sliderRange = ConversionManager.bitmapToTexture(Resource1.sliderRange_9);
+            texture_sliderDefault = ConversionManager.bitmapToTexture(Resource1.slider);
+            texture_sliderSelected = ConversionManager.bitmapToTexture(Resource1.sliderSelected);
+
+            ninePatch_sliderRange.LoadFromTexture(sliderRange);
 
             texture_checkBoxDefault = ConversionManager.bitmapToTexture(Resource1.checkbox_default);
             texture_checkBoxSelected = ConversionManager.bitmapToTexture(Resource1.checkbox_default_selected);
@@ -118,6 +135,9 @@ namespace GeeUI
 
             ninePatch_windowSelected.LoadFromTexture(windowSelected);
             ninePatch_windowUnselected.LoadFromTexture(windowUnselected);
+
+            ninePatch_panelUnselected.LoadFromTexture(panelUnselected);
+            ninePatch_panelSelected.LoadFromTexture(panelSelected);
 
             ninePatch_btnDefault.LoadFromTexture(btnDefault);
             ninePatch_btnClicked.LoadFromTexture(btnClicked);
