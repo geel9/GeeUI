@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework.Graphics;
 using GeeUI.Structs;
 
@@ -15,23 +12,23 @@ namespace GeeUI.Views
         public delegate void MouseOverEventHandler(object sender, EventArgs e);
         public delegate void MouseOffEventHandler(object sender, EventArgs e);
 
-        public event MouseClickEventHandler onMouseClick;
-        public event MouseOverEventHandler onMouseOver;
-        public event MouseOffEventHandler onMouseOff;
+        public event MouseClickEventHandler OnMouseClick;
+        public event MouseOverEventHandler OnMouseOver;
+        public event MouseOffEventHandler OnMouseOff;
 
-        public View parentView = null;
+        public View ParentView;
 
-        public int childrenDepth = 0;
-        public int thisDepth = 0;
+        public int ChildrenDepth;
+        public int ThisDepth;
 
-        public bool ignoreParentBounds = false;
-        public bool selected = false;
-        public bool active = true;
+        public bool IgnoreParentBounds;
+        public bool Selected;
+        public bool Active = true;
 
-        public int numChildrenAllowed = -1;
+        public int NumChildrenAllowed = -1;
 
-        protected internal bool _mouseOver = false;
-        public bool mouseOver
+        internal bool _mouseOver;
+        public bool MouseOver
         {
             get
             {
@@ -40,10 +37,10 @@ namespace GeeUI.Views
             set
             {
                 _mouseOver = value;
-                if (value == true)
-                    onMOver();
+                if (value)
+                    OnMOver();
                 else
-                    onMOff();
+                    OnMOff();
             }
         }
 
@@ -51,7 +48,7 @@ namespace GeeUI.Views
         {
             get
             {
-                return new Rectangle((int)position.X, (int)position.Y, width, height);
+                return new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
             }
         }
 
@@ -59,9 +56,9 @@ namespace GeeUI.Views
         {
             get
             {
-                if (parentView == null) return BoundBox;
+                if (ParentView == null) return BoundBox;
                 Rectangle curBB = BoundBox;
-                return new Rectangle(absoluteX, absoluteY, curBB.Width, curBB.Height);
+                return new Rectangle(AbsoluteX, AbsoluteY, curBB.Width, curBB.Height);
             }
         }
 
@@ -77,66 +74,68 @@ namespace GeeUI.Views
         {
             get
             {
-                if (parentView == null) return ContentBoundBox;
+                if (ParentView == null) return ContentBoundBox;
                 Rectangle curBB = ContentBoundBox;
-                curBB.X += absoluteX - x;
-                curBB.Y += absoluteY - y;
+                curBB.X += AbsoluteX - X;
+                curBB.Y += AbsoluteY - Y;
                 return curBB;
             }
         }
 
-        public int x
+        public int X
         {
             get
             {
-                return (int)position.X;
+                return (int)Position.X;
             }
             set
             {
-                position.X = value;
+                Position.X = value;
             }
         }
-        public int y
+        public int Y
         {
             get
             {
-                return (int)position.Y;
+                return (int)Position.Y;
             }
             set
             {
-                position.Y = value;
+                Position.Y = value;
             }
         }
-        public Vector2 position = Vector2.Zero;
+        public Vector2 Position = Vector2.Zero;
 
-        public int absoluteX
+        public int AbsoluteX
         {
             get
             {
-                return (int)absolutePosition.X;
+                return (int)AbsolutePosition.X;
             }
         }
-        public int absoluteY
+        public int AbsoluteY
         {
             get
             {
-                return (int)absolutePosition.Y;
+                return (int)AbsolutePosition.Y;
             }
         }
-        public Vector2 absolutePosition
+        public Vector2 AbsolutePosition
         {
             get
             {
-                if (parentView == null) return position;
-                return position + parentView.absolutePosition;
+                if (ParentView == null) return Position;
+                return Position + ParentView.AbsolutePosition;
             }
         }
 
-        public int width = 0, height = 0;
+        public int Width, Height;
 
+// ReSharper disable InconsistentNaming
         protected internal List<View> _children = new List<View>();
+// ReSharper restore InconsistentNaming
 
-        public View[] children
+        public View[] Children
         {
             get
             {
@@ -151,76 +150,74 @@ namespace GeeUI.Views
         public View(View parentView)
         {
             if (parentView != null)
-                parentView.addChild(this);
+                parentView.AddChild(this);
         }
 
         #region Child management
 
-        public void addChild(View child)
+        public virtual void AddChild(View child)
         {
 
-            if (children.Length + 1 > numChildrenAllowed && numChildrenAllowed != -1)
+            if (Children.Length + 1 > NumChildrenAllowed && NumChildrenAllowed != -1)
                 throw new Exception("You have attempted to add too many child Views to this View.");
-
             //Ensure that a child can only belong to one View ever.
-            if (child.parentView != null)
-                child.parentView.removeChild(child);
-            child.parentView = this;
-            child.thisDepth = childrenDepth++;
+            if (child.ParentView != null)
+                child.ParentView.RemoveChild(child);
+            child.ParentView = this;
+            child.ThisDepth = ChildrenDepth++;
             _children.Add(child);
-
         }
 
-        public void removeChild(View child)
+        public void RemoveChild(View child)
         {
             _children.Remove(child);
-            child.parentView = null;
-            reOrderChildren();
+            child.ParentView = null;
+            ReOrderChildren();
         }
 
         #endregion
 
         #region Parent management
 
-        public void setParent(View parent)
+        public void SetParent(View parent)
         {
-            if (parentView != null)
+            if (ParentView != null)
             {
-                parentView.removeChild(this);
+                ParentView.RemoveChild(this);
             }
-            parent.addChild(this);
+            parent.AddChild(this);
         }
 
         #endregion
 
         #region Child depth ordering
 
-        public void bringChildToFront(View view)
+        public void BringChildToFront(View view)
         {
             _children.Remove(view);
-            List<View> sortedChildren = _children;
+            var sortedChildren = _children;
             sortedChildren.Sort(ViewDepthComparer.CompareDepthsInverse);
             sortedChildren.Add(view);
             _children = sortedChildren;
-            childrenDepth = 0;
-            for (int i = 0; i < _children.Count; i++)
+            ChildrenDepth = 0;
+            for (var i = 0; i < _children.Count; i++)
             {
-                _children[i].thisDepth = i;
-                childrenDepth++;
+                _children[i].ThisDepth = i;
+                ChildrenDepth++;
             }
 
         }
 
-        public void reOrderChildren()
+        public void ReOrderChildren()
         {
-            View[] sortedChildren = children;
+            View[] sortedChildren = Children;
             Array.Sort(sortedChildren, ViewDepthComparer.CompareDepths);
-            childrenDepth = 0;
+            ChildrenDepth = 0;
 
             for (int i = 0; i < sortedChildren.Length; i++)
             {
-                _children[i].thisDepth = i;
-                childrenDepth++;
+                Children[i].ThisDepth = i;
+                ChildrenDepth++;
             }
         }
 
@@ -228,54 +225,54 @@ namespace GeeUI.Views
 
         #region Virtual methods/events
 
-        protected internal virtual void onMClick(Vector2 position, bool fromChild = false)
+        protected internal virtual void OnMClick(Vector2 position, bool fromChild = false)
         {
-            if (onMouseClick != null)
-                onMouseClick(this, new EventArgs());
-            if (parentView != null) parentView.onMClick(position, true);
+            if (OnMouseClick != null)
+                OnMouseClick(this, new EventArgs());
+            if (ParentView != null) ParentView.OnMClick(position, true);
         }
 
-        protected internal virtual void onMClickAway(bool fromChild = false)
+        protected internal virtual void OnMClickAway(bool fromChild = false)
         {
 
         }
 
-        protected internal virtual void onMOver(bool fromChild = false)
+        protected internal virtual void OnMOver(bool fromChild = false)
         {
-            if (onMouseOver != null)
-                onMouseOver(this, new EventArgs());
-            if (parentView != null) parentView.onMOver(true);
+            if (OnMouseOver != null)
+                OnMouseOver(this, new EventArgs());
+            if (ParentView != null) ParentView.OnMOver(true);
         }
 
-        protected internal virtual void onMOff(bool fromChild = false)
+        protected internal virtual void OnMOff(bool fromChild = false)
         {
-            if (onMouseOff != null)
-                onMouseOff(this, new EventArgs());
-            if (parentView != null) parentView.onMOff(true);
+            if (OnMouseOff != null)
+                OnMouseOff(this, new EventArgs());
+            if (ParentView != null) ParentView.OnMOff(true);
         }
 
         protected internal virtual void Update(GameTime theTime)
         {
-            if (parentView == null || ignoreParentBounds) return;
-            Rectangle curBB = AbsoluteBoundBox;
-            Rectangle parentBB = parentView.AbsoluteContentBoundBox;
-            int xOffset = curBB.Right - parentBB.Right;
-            int yOffset = curBB.Bottom - parentBB.Bottom;
+            if (ParentView == null || IgnoreParentBounds) return;
+            var curBB = AbsoluteBoundBox;
+            var parentBB = ParentView.AbsoluteContentBoundBox;
+            var xOffset = curBB.Right - parentBB.Right;
+            var yOffset = curBB.Bottom - parentBB.Bottom;
             if (xOffset > 0)
-                this.position.X -= xOffset;
+                Position.X -= xOffset;
             else
             {
                 xOffset = curBB.Left - parentBB.Left;
                 if (xOffset < 0)
-                    this.position.X -= xOffset;
+                    Position.X -= xOffset;
             }
             if (yOffset > 0)
-                this.position.Y -= yOffset;
+                Position.Y -= yOffset;
             else
             {
                 yOffset = curBB.Top - parentBB.Top;
                 if (yOffset < 0)
-                    position.Y -= yOffset;
+                    Position.Y -= yOffset;
             }
         }
 

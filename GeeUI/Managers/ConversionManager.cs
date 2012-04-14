@@ -1,25 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Drawing;
-using SDI = System.Drawing.Imaging;
-using System.Runtime.InteropServices;
+
 namespace GeeUI.Managers
 {
     public static class ConversionManager
     {
-        public static Texture2D bitmapToTexture(Bitmap bmp)
+        public static Texture2D BitmapToTexture(Bitmap bmp)
         {
-            using (MemoryStream s = new MemoryStream())
+            using (var s = new MemoryStream())
             {
                 bmp.Save(s, System.Drawing.Imaging.ImageFormat.Png);
                 s.Seek(0, SeekOrigin.Begin);
-                Texture2D tx = Texture2D.FromStream(GeeUI.theGame.GraphicsDevice, s);
+                Texture2D tx = Texture2D.FromStream(GeeUI.TheGame.GraphicsDevice, s);
                 return tx;
             }
         }
@@ -31,7 +27,7 @@ namespace GeeUI.Managers
 
         public static string GetSafeName(string path)
         {
-            Regex r = new Regex("(.+?\\\\)+(.+?)\\.(?=.+)");
+            var r = new Regex("(.+?\\\\)+(.+?)\\.(?=.+)");
             Match mc = r.Match(path);
             return mc.Groups[2].Value;
         }
@@ -53,12 +49,12 @@ namespace GeeUI.Managers
             return radian * (180 / Math.PI);
         }
 
-        public static Vector2 PToV(Microsoft.Xna.Framework.Point p)
+        public static Vector2 PtoV(Microsoft.Xna.Framework.Point p)
         {
             return new Vector2(p.X, p.Y);
         }
 
-        public static Microsoft.Xna.Framework.Point VToP(Vector2 v)
+        public static Microsoft.Xna.Framework.Point VtoP(Vector2 v)
         {
             return new Microsoft.Xna.Framework.Point((int)v.X, (int)v.Y);
         }

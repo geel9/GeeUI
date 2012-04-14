@@ -1,31 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-using GeeUI;
 using GeeUI.Views;
 namespace GeeUITestBed
 {
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        GraphicsDeviceManager _graphics;
+        SpriteBatch _spriteBatch;
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            graphics.PreferMultiSampling = true;
+            _graphics.PreferMultiSampling = true;
         }
 
         /// <summary>
@@ -48,62 +40,25 @@ namespace GeeUITestBed
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            SpriteFont font = Content.Load<SpriteFont>("testFont");
-
-
-            WindowView window = new WindowView(GeeUI.GeeUI.rootView, new Vector2(5, 5), font);
-            window.windowText = "Switching a view's parent";
-
-            PanelView panel2 = new PanelView(window, new Vector2(0, 0));
-            panel2.width = 350;
-            panel2.height = 400;
-
-            WindowView secondWindow = new WindowView(GeeUI.GeeUI.rootView, new Vector2(400, 5), font);
-            secondWindow.windowText = "Second window";
-
-            PanelView panel3 = new PanelView(secondWindow, new Vector2(0, 0));
-            panel3.width = 350;
-            panel3.height = 400;
-
-            WindowView childWindow = new WindowView(panel2, new Vector2(10, 10), font);
-            childWindow.windowText = "Child window";
-            childWindow.draggable = false;
+            var font = Content.Load<SpriteFont>("testFont");
 
 
-            PanelView childPanel = new PanelView(childWindow, new Vector2(0, 0));
-            childPanel.width = 210;
-            childPanel.height = 160;
+            var window = new WindowView(GeeUI.GeeUI.RootView, new Vector2(5, 5), font)
+                             {WindowText = "Tab Views"};
+            var panel = new PanelView(window, new Vector2(0, 0)) {Width = 500, Height = 400};
+            var tabs = new TabHost(panel, new Vector2(0, 0), font);
 
-            TextFieldView textField = new TextFieldView(childPanel, new Vector2(0, 0), font);
-            textField.width = 203;
-            textField.height = 100;
+            var panel1 = new PanelView(null, Vector2.Zero) {Width = 200, Height = 100};
+            var panel2 = new PanelView(null, Vector2.Zero) {Width = 250, Height = 140};
 
+            tabs.AddTab("Tab 1", panel1);
+            tabs.AddTab("Tab 2", panel2);
 
-            ButtonView switchingButton = new ButtonView(childPanel, "Switch parents", new Vector2(0, 110), font);
+            new TextFieldView(panel1, Vector2.Zero, font) {Text = "This is tab 1.", Width = 150, Height = 30};
+            new ButtonView(panel2, "This is tab 2!", Vector2.Zero, font);
 
-            switchingButton.onMouseClick += new View.MouseClickEventHandler((object sender, EventArgs e) =>
-            {
-                if (childWindow.parentView == panel2)
-                    childWindow.setParent(panel3);
-                else
-                    childWindow.setParent(panel2);
-            });
-
-
-            /*CheckBoxView check = new CheckBoxView(childPanel, new Vector2(0, 135), "Enable button", font);
-            check.onMouseClick += new View.MouseClickEventHandler((object sender, EventArgs e) =>
-            {
-                switchingButton.active = check.isChecked;
-            });*/
-
-            SliderView slider = new SliderView(childPanel, new Vector2(0, 150), 0, 10);
-            slider.width = 100;
-            slider.textFont = font;
-            slider.drawText = true;
-
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -112,7 +67,6 @@ namespace GeeUITestBed
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
         }
 
         /// <summary>
@@ -124,11 +78,9 @@ namespace GeeUITestBed
         {
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+                Exit();
 
             GeeUI.GeeUI.Update(gameTime);
-
-            // TODO: Add your update logic here
 
             base.Update(gameTime);
         }
@@ -141,11 +93,11 @@ namespace GeeUITestBed
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
+            _spriteBatch.Begin();
 
-            GeeUI.GeeUI.Draw(spriteBatch);
+            GeeUI.GeeUI.Draw(_spriteBatch);
 
-            spriteBatch.End();
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
     }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using GeeUI.Managers;
@@ -10,138 +7,123 @@ namespace GeeUI.Views
 {
     public class CheckBoxView : View
     {
-        public Texture2D textureDefault;
-        public Texture2D textureChecked;
-        public Texture2D textureDefaultSelected;
-        public Texture2D textureCheckedSelected;
+        public Texture2D TextureDefault;
+        public Texture2D TextureChecked;
+        public Texture2D TextureDefaultSelected;
+        public Texture2D TextureCheckedSelected;
 
-        public bool isChecked = false;
-        public bool allowLabelClicking = true;
+        public bool IsChecked;
+        public bool AllowLabelClicking = true;
 
-        private int seperationBetweenCBAndText = 3;
+        private const int SeperationBetweenCbAndText = 3;
 
-        public View checkBoxContentView
+        public View CheckBoxContentView
         {
             get
             {
-                if (children.Length == 0)
-                {
-                    return null;
-                }
-                else
-                {
-                    return children[0];
-                }
+                return Children.Length == 0 ? null : Children[0];
             }
             set
             {
-                if (this.children.Length == 0)
+                if (Children.Length == 0)
                 {
-                    addChild(value);
+                    AddChild(value);
                     return;
                 }
                 _children[0] = value;
-                reOrderChildren();
+                ReOrderChildren();
             }
         }
 
-        public Texture2D curTexture
+        public Texture2D CurTexture
         {
             get
             {
-                if (selected || mouseOver)
-                {
-                    return isChecked ? textureCheckedSelected : textureDefaultSelected;
-                }
-                else
-                {
-                    return isChecked ? textureChecked : textureDefault;
-                }
+                if (Selected || MouseOver)
+                    return IsChecked ? TextureCheckedSelected : TextureDefaultSelected;
+                return IsChecked ? TextureChecked : TextureDefault;
             }
         }
 
-        public override Microsoft.Xna.Framework.Rectangle BoundBox
+        public override Rectangle BoundBox
         {
             get
             {
-                View child = checkBoxContentView;
+                View child = CheckBoxContentView;
                 if (child == null)
                 {
-                    return curTexture.Bounds;
+                    return CurTexture.Bounds;
                 }
-                return new Rectangle((int)position.X, (int)position.Y,
-                    curTexture.Width + seperationBetweenCBAndText + child.BoundBox.Width,
+                return new Rectangle((int)Position.X, (int)Position.Y,
+                    CurTexture.Width + SeperationBetweenCbAndText + child.BoundBox.Width,
 
-                    Math.Max(curTexture.Height, child.BoundBox.Height));
+                    Math.Max(CurTexture.Height, child.BoundBox.Height));
             }
         }
 
-        public Rectangle checkBoundBox
+        public Rectangle CheckBoundBox
         {
             get
             {
-                return new Rectangle((int)absolutePosition.X, (int)absolutePosition.Y,
-                    curTexture.Width,
-                    curTexture.Height);
+                return new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y,
+                    CurTexture.Width,
+                    CurTexture.Height);
             }
         }
 
-        public override Microsoft.Xna.Framework.Rectangle ContentBoundBox
+        public override Rectangle ContentBoundBox
         {
             get
             {
-                View child = checkBoxContentView;
-                if (child == null)
+                View child = CheckBoxContentView;
+                if (child != null)
                 {
-                    return curTexture.Bounds;
+                    return new Rectangle((int)Position.X + CurTexture.Width + SeperationBetweenCbAndText,
+                                         (int)Position.Y, child.BoundBox.Width, child.BoundBox.Height);
                 }
-                return new Rectangle((int)position.X + curTexture.Width + seperationBetweenCBAndText, (int)position.Y, child.BoundBox.Width, child.BoundBox.Height);
+                return CurTexture.Bounds;
             }
         }
 
         public CheckBoxView(View rootView, Vector2 position, string label, SpriteFont labelFont)
             : base(rootView)
         {
-            this.position = position;
-            this.numChildrenAllowed = 1;
-            TextView labelView = new TextView(this, label, Vector2.Zero, labelFont);
+            Position = position;
+            NumChildrenAllowed = 1;
 
-            textureChecked = GeeUI.texture_checkBoxDefaultChecked;
-            textureCheckedSelected = GeeUI.texture_checkBoxSelectedChecked;
-            textureDefault = GeeUI.texture_checkBoxDefault;
-            textureDefaultSelected = GeeUI.texture_checkBoxSelected;
+            new TextView(this, label, Vector2.Zero, labelFont);
+
+            TextureChecked = GeeUI.TextureCheckBoxDefaultChecked;
+            TextureCheckedSelected = GeeUI.TextureCheckBoxSelectedChecked;
+            TextureDefault = GeeUI.TextureCheckBoxDefault;
+            TextureDefaultSelected = GeeUI.TextureCheckBoxSelected;
         }
 
-        protected internal override void onMClick(Vector2 position, bool fromChild = false)
+        protected internal override void OnMClick(Vector2 position, bool fromChild = false)
         {
-            if (allowLabelClicking || fromChild == false)
-                isChecked = !isChecked;
-            base.onMClick(position);
+            if (AllowLabelClicking || fromChild == false)
+                IsChecked = !IsChecked;
+            base.OnMClick(position);
         }
-        protected internal override void onMClickAway(bool fromChild = false)
+        protected internal override void OnMClickAway(bool fromChild = false)
         {
             //base.onMClickAway();
         }
 
-        protected internal override void onMOver(bool fromChild = false)
+        protected internal override void OnMOver(bool fromChild = false)
         {
-            if (!allowLabelClicking && !checkBoundBox.Contains(InputManager.GetMousePos()))
+            if (!AllowLabelClicking && !CheckBoundBox.Contains(InputManager.GetMousePos()))
                 _mouseOver = false;
-            base.onMOver();
+            base.OnMOver();
         }
-        protected internal override void onMOff(bool fromChild = false)
+        protected internal override void OnMOff(bool fromChild = false)
         {
-            base.onMOff();
-        }
-
-        protected internal override void Update(GameTime theTime)
-        {
-            base.Update(theTime);
+            base.OnMOff();
         }
 
         protected internal override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(curTexture, absolutePosition, Color.White);
+            spriteBatch.Draw(CurTexture, AbsolutePosition, Color.White);
             base.Draw(spriteBatch);
         }
     }

@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using GeeUI.Structs;
+﻿using GeeUI.Structs;
 using Microsoft.Xna.Framework;
-using GeeUI.Managers;
 
 namespace GeeUI.Views
 {
     public class PanelView : View
     {
-        public NinePatch unselectedNinepatch = new NinePatch();
-        public NinePatch selectedNinepatch = new NinePatch();
+        public NinePatch UnselectedNinepatch = new NinePatch();
+        public NinePatch SelectedNinepatch = new NinePatch();
 
         public override Rectangle BoundBox
         {
             get
             {
-                NinePatch curPatch = selected ? selectedNinepatch : unselectedNinepatch;
-                int width = curPatch.leftWidth + curPatch.rightWidth + this.width;
-                int height = curPatch.topHeight + curPatch.bottomHeight + this.height;
-                return new Rectangle((int)position.X, (int)position.Y, width, height);
+                NinePatch curPatch = Selected ? SelectedNinepatch : UnselectedNinepatch;
+                int width = curPatch.LeftWidth + curPatch.RightWidth + Width;
+                int height = curPatch.TopHeight + curPatch.BottomHeight + Height;
+                return new Rectangle((int)Position.X, (int)Position.Y, width, height);
             }
         }
 
@@ -28,45 +23,45 @@ namespace GeeUI.Views
         {
             get
             {
-                NinePatch curPatch = selected ? selectedNinepatch : unselectedNinepatch;
-                return new Rectangle((int)position.X + curPatch.leftWidth, (int)position.Y + curPatch.topHeight, width, height);
+                NinePatch curPatch = Selected ? SelectedNinepatch : UnselectedNinepatch;
+                return new Rectangle((int)Position.X + curPatch.LeftWidth, (int)Position.Y + curPatch.TopHeight, Width, Height);
             }
         }
 
         public PanelView(View rootView, Vector2 position) : base(rootView)
         {
-            selectedNinepatch = GeeUI.ninePatch_panelSelected;
-            unselectedNinepatch = GeeUI.ninePatch_panelUnselected;
-            this.position = position;
+            SelectedNinepatch = GeeUI.NinePatchPanelSelected;
+            UnselectedNinepatch = GeeUI.NinePatchPanelUnselected;
+            Position = position;
         }
 
         protected internal override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
         {
-            NinePatch patch = selected ? selectedNinepatch : unselectedNinepatch;
-            patch.Draw(spriteBatch, absolutePosition, width, height);
+            NinePatch patch = Selected ? SelectedNinepatch : UnselectedNinepatch;
+            patch.Draw(spriteBatch, AbsolutePosition, Width, Height);
             base.Draw(spriteBatch);
         }
 
 
 
-        protected internal override void onMClick(Microsoft.Xna.Framework.Vector2 position, bool fromChild = false)
+        protected internal override void OnMClick(Vector2 position, bool fromChild = false)
         {
-            base.onMClick(position, true);
+            base.OnMClick(position, true);
         }
 
-        protected internal override void onMClickAway(bool fromChild = false)
+        protected internal override void OnMClickAway(bool fromChild = false)
         {
-            base.onMClickAway(true);
+            base.OnMClickAway(true);
         }
 
-        protected internal override void onMOver(bool fromChild = false)
+        protected internal override void OnMOver(bool fromChild = false)
         {
-            base.onMOver(true);
+            base.OnMOver(true);
         }
 
-        protected internal override void onMOff(bool fromChild = false)
+        protected internal override void OnMOff(bool fromChild = false)
         {
-            base.onMOff(true);
+            base.OnMOff(true);
         }
     }
 }

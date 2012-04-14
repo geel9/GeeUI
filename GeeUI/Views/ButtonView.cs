@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using GeeUI.Structs;
 using GeeUI.Managers;
@@ -12,32 +8,24 @@ namespace GeeUI.Views
 
     public class ButtonView : View
     {
-        public NinePatch ninePatchNormal;
-        public NinePatch ninePatchHover;
-        public NinePatch ninePatchClicked;
+        public NinePatch NinePatchNormal;
+        public NinePatch NinePatchHover;
+        public NinePatch NinePatchClicked;
 
-        public View buttonContentview
+        public View ButtonContentview
         {
-            get
-            {
-                if (children.Length == 0)
-                {
-                    return null;
-                }
-                else
-                {
-                    return children[0];
-                }
+            get {
+                return Children.Length == 0 ? null : Children[0];
             }
             set
             {
-                if (this.children.Length == 0)
+                if (Children.Length == 0)
                 {
-                    addChild(value);
+                    AddChild(value);
                     return;
                 }
                 _children[0] = value;
-                reOrderChildren();
+                ReOrderChildren();
             }
         }
 
@@ -45,82 +33,76 @@ namespace GeeUI.Views
         {
             get
             {
-                NinePatch patch = currentNinepatch;
-                int width = (int)(patch.leftWidth + patch.rightWidth + (buttonContentview != null ? buttonContentview.BoundBox.Width : 0));
-                int height = (int)(patch.topHeight + patch.bottomHeight + (buttonContentview != null ? buttonContentview.BoundBox.Height : 0));
-                return new Rectangle((int)position.X, (int)position.Y, width, height);
+                NinePatch patch = CurrentNinepatch;
+                int width = patch.LeftWidth + patch.RightWidth + (ButtonContentview != null ? ButtonContentview.BoundBox.Width : 0);
+                int height = patch.TopHeight + patch.BottomHeight + (ButtonContentview != null ? ButtonContentview.BoundBox.Height : 0);
+                return new Rectangle((int)Position.X, (int)Position.Y, width, height);
             }
         }
 
-        public NinePatch currentNinepatch
+        public NinePatch CurrentNinepatch
         {
             get
             {
-                if (mouseOver)
+                if (MouseOver)
                 {
-                    return InputManager.isLeftMousePressed() ? ninePatchClicked : ninePatchHover;
+                    return InputManager.IsMousePressed(MouseButton.Left) ? NinePatchClicked : NinePatchHover;
                 }
-                else
-                {
-                    return ninePatchNormal;
-                }
+                return NinePatchNormal;
             }
         }
 
         public ButtonView(View rootView, string text, Vector2 position, SpriteFont font)
             : base(rootView)
         {
-            ninePatchNormal = GeeUI.ninePatch_btnDefault;
-            ninePatchHover = GeeUI.ninePatch_btnHover;
-            ninePatchClicked = GeeUI.ninePatch_btnClicked;
-            this.position = position;
-            TextView view = new TextView(this, text, new Vector2(0, 0), font);
+            NinePatchNormal = GeeUI.NinePatchBtnDefault;
+            NinePatchHover = GeeUI.NinePatchBtnHover;
+            NinePatchClicked = GeeUI.NinePatchBtnClicked;
+            Position = position;
+
+            //Make the TextView for the text
+            new TextView(this, text, new Vector2(0, 0), font);
         }
 
         public ButtonView(View rootview, View contentView, Vector2 position) : base(rootview)
         {
-            ninePatchNormal = GeeUI.ninePatch_btnDefault;
-            ninePatchHover = GeeUI.ninePatch_btnHover;
-            ninePatchClicked = GeeUI.ninePatch_btnClicked;
-            this.position = position;
-            buttonContentview = contentView;
+            NinePatchNormal = GeeUI.NinePatchBtnDefault;
+            NinePatchHover = GeeUI.NinePatchBtnHover;
+            NinePatchClicked = GeeUI.NinePatchBtnClicked;
+            Position = position;
+            ButtonContentview = contentView;
         }
 
-        protected internal override void onMClick(Vector2 position, bool fromChild = false)
+        protected internal override void OnMClick(Vector2 position, bool fromChild = false)
         {
-            base.onMClick(position);
+            base.OnMClick(position);
         }
-        protected internal override void onMClickAway(bool fromChild = false)
+        protected internal override void OnMClickAway(bool fromChild = false)
         {
             //base.onMClickAway();
         }
 
-        protected internal override void onMOver(bool fromChild = false)
+        protected internal override void OnMOver(bool fromChild = false)
         {
-            base.onMOver();
+            base.OnMOver();
         }
-        protected internal override void onMOff(bool fromChild = false)
+        protected internal override void OnMOff(bool fromChild = false)
         {
-            base.onMOff();
-        }
-
-        protected internal override void Update(GameTime theTime)
-        {
-            base.Update(theTime);
+            base.OnMOff();
         }
 
         protected internal override void Draw(SpriteBatch spriteBatch)
         {
-            NinePatch patch = currentNinepatch;
-            int width = (int)(buttonContentview != null ? buttonContentview.BoundBox.Width : 0);
-            int height = (int)(buttonContentview != null ? buttonContentview.BoundBox.Height : 0);
-            patch.Draw(spriteBatch, absolutePosition, width, height);
+            NinePatch patch = CurrentNinepatch;
+            int width = ButtonContentview != null ? ButtonContentview.BoundBox.Width : 0;
+            int height = ButtonContentview != null ? ButtonContentview.BoundBox.Height : 0;
+            patch.Draw(spriteBatch, AbsolutePosition, width, height);
 
-            View childView = buttonContentview;
+            View childView = ButtonContentview;
             if (childView != null)
             {
-                childView.x = patch.leftWidth;
-                childView.y = patch.topHeight;
+                childView.X = patch.LeftWidth;
+                childView.Y = patch.TopHeight;
             }
 
             base.Draw(spriteBatch);

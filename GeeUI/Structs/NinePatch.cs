@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using GeeUI.Managers;
@@ -10,53 +8,53 @@ namespace GeeUI.Structs
 {
     public class NinePatch
     {
-        public int leftMostPatch;
-        public int rightMostPatch;
-        public int topMostPatch;
-        public int bottomMostPatch;
+        public int LeftMostPatch;
+        public int RightMostPatch;
+        public int TopMostPatch;
+        public int BottomMostPatch;
 
-        public int leftWidth
+        public int LeftWidth
         {
             get
             {
-                return leftMostPatch - 1;
+                return LeftMostPatch - 1;
             }
         }
-        public int rightWidth
+        public int RightWidth
         {
             get
             {
-                if (texture != null)
-                    return texture.Width - (rightMostPatch + 1);
+                if (Texture != null)
+                    return Texture.Width - (RightMostPatch + 1);
                 return 0;
             }
         }
-        public int topHeight
+        public int TopHeight
         {
             get
             {
-                return topMostPatch - 1;
+                return TopMostPatch - 1;
             }
         }
-        public int bottomHeight
+        public int BottomHeight
         {
             get
             {
-                if (texture != null)
-                    return texture.Height - (bottomMostPatch + 1);
+                if (Texture != null)
+                    return Texture.Height - (BottomMostPatch + 1);
                 return 0;
             }
         }
 
-        public Texture2D texture;
+        public Texture2D Texture;
 
         public NinePatch()
         {
-            leftMostPatch = -1;
-            rightMostPatch = -1;
-            topMostPatch = -1;
-            bottomMostPatch = -1;
-            texture = null;
+            LeftMostPatch = -1;
+            RightMostPatch = -1;
+            TopMostPatch = -1;
+            BottomMostPatch = -1;
+            Texture = null;
         }
 
         /// <summary>
@@ -64,9 +62,9 @@ namespace GeeUI.Structs
         /// </summary>
         /// <param name="texture">The texture to test against</param>
         /// <returns>True if the texture is compatible with ninepatches, false otherwise</returns>
-        public static bool isAlreadyNinepatch(Texture2D texture)
+        public static bool IsAlreadyNinepatch(Texture2D texture)
         {
-            Microsoft.Xna.Framework.Color[] data = new Microsoft.Xna.Framework.Color[texture.Width * texture.Height];
+            var data = new Color[texture.Width * texture.Height];
             texture.GetData(data);
 
             for (int i = 0; i < texture.Width; i++)
@@ -132,25 +130,25 @@ namespace GeeUI.Structs
         /// <param name="texture">The NinePatch-compatible texture to load from.</param>
         public void LoadFromTexture(Texture2D texture)
         {
-            leftMostPatch = -1;
-            rightMostPatch = -1;
-            topMostPatch = -1;
-            bottomMostPatch = -1;
-            this.texture = texture;
-            Microsoft.Xna.Framework.Color[] data = new Microsoft.Xna.Framework.Color[texture.Width * texture.Height];
+            LeftMostPatch = -1;
+            RightMostPatch = -1;
+            TopMostPatch = -1;
+            BottomMostPatch = -1;
+            Texture = texture;
+            var data = new Color[texture.Width * texture.Height];
             texture.GetData(data);
             for (int i = 0; i < texture.Width; i++)
             {
                 Color curPixel = data[i];
                 if (curPixel.A != 0)
                 {
-                    if (leftMostPatch == -1) leftMostPatch = i;
+                    if (LeftMostPatch == -1) LeftMostPatch = i;
                 }
-                if (curPixel.A != 0 && leftMostPatch != -1)
+                if (curPixel.A != 0 && LeftMostPatch != -1)
                 {
-                    rightMostPatch = i;
+                    RightMostPatch = i;
                 }
-                if (curPixel.A == 0 && leftMostPatch != -1 && rightMostPatch != -1)
+                if (curPixel.A == 0 && LeftMostPatch != -1 && RightMostPatch != -1)
                     break;
             }
             for (int i = 0; i < data.Length; i += texture.Width)
@@ -158,13 +156,13 @@ namespace GeeUI.Structs
                 Color curPixel = data[i];
                 if (curPixel.A != 0)
                 {
-                    if (topMostPatch == -1) topMostPatch = i / texture.Width;
+                    if (TopMostPatch == -1) TopMostPatch = i / texture.Width;
                 }
-                if (curPixel.A != 0 && topMostPatch != -1)
+                if (curPixel.A != 0 && TopMostPatch != -1)
                 {
-                    bottomMostPatch = (i / texture.Width);
+                    BottomMostPatch = (i / texture.Width);
                 }
-                if (curPixel.A == 0 && topMostPatch != -1 && bottomMostPatch != -1)
+                if (curPixel.A == 0 && TopMostPatch != -1 && BottomMostPatch != -1)
                     break;
             }
         }
@@ -179,60 +177,60 @@ namespace GeeUI.Structs
         /// <param name="angle">The angle in degrees to rotate the ninepatch.</param>
         public void Draw(SpriteBatch sb, Vector2 position, int contentWidth, int contentHeight, float angle = 0)
         {
-            Rectangle topLeft = new Rectangle(1, 1, leftMostPatch - 1, topMostPatch - 1);
-            Rectangle topMiddle = new Rectangle(leftMostPatch, 1, (rightMostPatch - leftMostPatch), topMostPatch - 1);
-            Rectangle topRight = new Rectangle(rightMostPatch + 1, 1, (texture.Width - 1) - rightMostPatch, topMostPatch - 1);
+            var topLeft = new Rectangle(1, 1, LeftMostPatch - 1, TopMostPatch - 1);
+            var topMiddle = new Rectangle(LeftMostPatch, 1, (RightMostPatch - LeftMostPatch), TopMostPatch - 1);
+            var topRight = new Rectangle(RightMostPatch + 1, 1, (Texture.Width - 1) - RightMostPatch, TopMostPatch - 1);
 
-            Rectangle Left = new Rectangle(1, topMostPatch, leftMostPatch - 1, (bottomMostPatch - topMostPatch));
-            Rectangle Middle = new Rectangle(leftMostPatch, topMostPatch, (rightMostPatch - leftMostPatch), (bottomMostPatch - topMostPatch));
-            Rectangle Right = new Rectangle(rightMostPatch + 1, topMostPatch, (texture.Width - 1) - rightMostPatch, (bottomMostPatch - topMostPatch));
+            var left = new Rectangle(1, TopMostPatch, LeftMostPatch - 1, (BottomMostPatch - TopMostPatch));
+            var middle = new Rectangle(LeftMostPatch, TopMostPatch, (RightMostPatch - LeftMostPatch), (BottomMostPatch - TopMostPatch));
+            var right = new Rectangle(RightMostPatch + 1, TopMostPatch, (Texture.Width - 1) - RightMostPatch, (BottomMostPatch - TopMostPatch));
 
-            Rectangle bottomLeft = new Rectangle(1, bottomMostPatch, leftMostPatch - 1, (texture.Height - 1) - bottomMostPatch);
-            Rectangle bottomMiddle = new Rectangle(leftMostPatch, bottomMostPatch, (rightMostPatch - leftMostPatch), (texture.Height - 1) - bottomMostPatch);
-            Rectangle bottomRight = new Rectangle(rightMostPatch + 1, bottomMostPatch, (texture.Width - 1) - rightMostPatch, (texture.Height - 1) - bottomMostPatch);
+            var bottomLeft = new Rectangle(1, BottomMostPatch, LeftMostPatch - 1, (Texture.Height - 1) - BottomMostPatch);
+            var bottomMiddle = new Rectangle(LeftMostPatch, BottomMostPatch, (RightMostPatch - LeftMostPatch), (Texture.Height - 1) - BottomMostPatch);
+            var bottomRight = new Rectangle(RightMostPatch + 1, BottomMostPatch, (Texture.Width - 1) - RightMostPatch, (Texture.Height - 1) - BottomMostPatch);
 
             int topMiddleWidth = topMiddle.Width;
-            int leftMiddleHeight = Left.Height;
-            float scaleMiddleByHorizontally = ((float)contentWidth / (float)topMiddleWidth);
-            float scaleMiddleByVertically = ((float)contentHeight / (float)leftMiddleHeight);
+            int leftMiddleHeight = left.Height;
+            float scaleMiddleByHorizontally = (contentWidth / (float)topMiddleWidth);
+            float scaleMiddleByVertically = (contentHeight / (float)leftMiddleHeight);
 
-            Vector2 drawTL = position;
-            Vector2 drawT = drawTL + new Vector2(topLeft.Width, 0);
-            Vector2 drawTR = drawT + new Vector2(topMiddle.Width * scaleMiddleByHorizontally, 0);
+            Vector2 drawTl = position;
+            Vector2 drawT = drawTl + new Vector2(topLeft.Width, 0);
+            Vector2 drawTr = drawT + new Vector2(topMiddle.Width * scaleMiddleByHorizontally, 0);
 
-            Vector2 drawL = drawTL + new Vector2(0, topLeft.Height);
+            Vector2 drawL = drawTl + new Vector2(0, topLeft.Height);
             Vector2 drawM = drawT + new Vector2(0, topMiddle.Height);
-            Vector2 drawR = drawTR + new Vector2(0, topRight.Height);
+            Vector2 drawR = drawTr + new Vector2(0, topRight.Height);
 
-            Vector2 drawBL = drawL + new Vector2(0, leftMiddleHeight * scaleMiddleByVertically);
-            Vector2 drawBM = drawM + new Vector2(0, leftMiddleHeight * scaleMiddleByVertically);
-            Vector2 drawBR = drawR + new Vector2(0, leftMiddleHeight * scaleMiddleByVertically);
+            Vector2 drawBl = drawL + new Vector2(0, leftMiddleHeight * scaleMiddleByVertically);
+            Vector2 drawBm = drawM + new Vector2(0, leftMiddleHeight * scaleMiddleByVertically);
+            Vector2 drawBr = drawR + new Vector2(0, leftMiddleHeight * scaleMiddleByVertically);
 
-            drawTL = rotateAroundOrigin(drawTL, position, angle);
-            drawT = rotateAroundOrigin(drawT, position, angle);
-            drawTR = rotateAroundOrigin(drawTR, position, angle);
+            drawTl = RotateAroundOrigin(drawTl, position, angle);
+            drawT = RotateAroundOrigin(drawT, position, angle);
+            drawTr = RotateAroundOrigin(drawTr, position, angle);
 
-            drawL = rotateAroundOrigin(drawL, position, angle);
-            drawM = rotateAroundOrigin(drawM, position, angle);
-            drawR = rotateAroundOrigin(drawR, position, angle);
+            drawL = RotateAroundOrigin(drawL, position, angle);
+            drawM = RotateAroundOrigin(drawM, position, angle);
+            drawR = RotateAroundOrigin(drawR, position, angle);
 
-            drawBL = rotateAroundOrigin(drawBL, position, angle);
-            drawBM = rotateAroundOrigin(drawBM, position, angle);
-            drawBR = rotateAroundOrigin(drawBR, position, angle);
+            drawBl = RotateAroundOrigin(drawBl, position, angle);
+            drawBm = RotateAroundOrigin(drawBm, position, angle);
+            drawBr = RotateAroundOrigin(drawBr, position, angle);
 
-            float angR = (float)ConversionManager.DegreeToRadians(angle);
+            var angR = (float)ConversionManager.DegreeToRadians(angle);
 
-            sb.Draw(texture, drawTL, topLeft, Color.White, angR, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
-            sb.Draw(texture, drawT, topMiddle, Color.White, angR, Vector2.Zero, new Vector2(scaleMiddleByHorizontally, 1), SpriteEffects.None, 0f);
-            sb.Draw(texture, drawTR, topRight, Color.White, angR, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+            sb.Draw(Texture, drawTl, topLeft, Color.White, angR, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+            sb.Draw(Texture, drawT, topMiddle, Color.White, angR, Vector2.Zero, new Vector2(scaleMiddleByHorizontally, 1), SpriteEffects.None, 0f);
+            sb.Draw(Texture, drawTr, topRight, Color.White, angR, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
 
-            sb.Draw(texture, drawL, Left, Color.White, angR, Vector2.Zero, new Vector2(1, scaleMiddleByVertically), SpriteEffects.None, 0f);
-            sb.Draw(texture, drawM, Middle, Color.White, angR, Vector2.Zero, new Vector2(scaleMiddleByHorizontally, scaleMiddleByVertically), SpriteEffects.None, 0f);
-            sb.Draw(texture, drawR, Right, Color.White, angR, Vector2.Zero, new Vector2(1, scaleMiddleByVertically), SpriteEffects.None, 0f);
+            sb.Draw(Texture, drawL, left, Color.White, angR, Vector2.Zero, new Vector2(1, scaleMiddleByVertically), SpriteEffects.None, 0f);
+            sb.Draw(Texture, drawM, middle, Color.White, angR, Vector2.Zero, new Vector2(scaleMiddleByHorizontally, scaleMiddleByVertically), SpriteEffects.None, 0f);
+            sb.Draw(Texture, drawR, right, Color.White, angR, Vector2.Zero, new Vector2(1, scaleMiddleByVertically), SpriteEffects.None, 0f);
 
-            sb.Draw(texture, drawBL, bottomLeft, Color.White, angR, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
-            sb.Draw(texture, drawBM, bottomMiddle, Color.White, angR, Vector2.Zero, new Vector2(scaleMiddleByHorizontally, 1), SpriteEffects.None, 0f);
-            sb.Draw(texture, drawBR, bottomRight, Color.White, angR, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+            sb.Draw(Texture, drawBl, bottomLeft, Color.White, angR, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+            sb.Draw(Texture, drawBm, bottomMiddle, Color.White, angR, Vector2.Zero, new Vector2(scaleMiddleByHorizontally, 1), SpriteEffects.None, 0f);
+            sb.Draw(Texture, drawBr, bottomRight, Color.White, angR, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
         }
 
         /// <summary>
@@ -246,26 +244,25 @@ namespace GeeUI.Structs
         /// <param name="drawColor">The color to draw </param>
         public void DrawContent(SpriteBatch sb, Vector2 position, int contentWidth, int contentHeight, Color drawColor)
         {
-            Rectangle topLeft = new Rectangle(1, 1, leftMostPatch - 1, topMostPatch - 1);
-            Rectangle topMiddle = new Rectangle(leftMostPatch, 1, (rightMostPatch - leftMostPatch), topMostPatch - 1);
+            var topLeft = new Rectangle(1, 1, LeftMostPatch - 1, TopMostPatch - 1);
+            var topMiddle = new Rectangle(LeftMostPatch, 1, (RightMostPatch - LeftMostPatch), TopMostPatch - 1);
 
-            Rectangle Left = new Rectangle(1, topMostPatch, leftMostPatch - 1, (bottomMostPatch - topMostPatch));
-            Rectangle Middle = new Rectangle(leftMostPatch, topMostPatch, (rightMostPatch - leftMostPatch), (bottomMostPatch - topMostPatch));
+            var left = new Rectangle(1, TopMostPatch, LeftMostPatch - 1, (BottomMostPatch - TopMostPatch));
+            var middle = new Rectangle(LeftMostPatch, TopMostPatch, (RightMostPatch - LeftMostPatch), (BottomMostPatch - TopMostPatch));
 
             int topMiddleWidth = topMiddle.Width;
-            int leftMiddleHeight = Left.Height;
-            float scaleMiddleByHorizontally = ((float)contentWidth / (float)topMiddleWidth);
-            float scaleMiddleByVertically = ((float)contentHeight / (float)leftMiddleHeight);
-            // if (scaleMiddleByVertically < 1) scaleMiddleByVertically = 1;
-            // if (scaleMiddleByHorizontally < 1) scaleMiddleByHorizontally = 1;
+            int leftMiddleHeight = left.Height;
+            float scaleMiddleByHorizontally = (contentWidth / (float)topMiddleWidth);
+            float scaleMiddleByVertically = (contentHeight / (float)leftMiddleHeight);
+
 
             Vector2 drawTL = position;
             Vector2 drawT = drawTL + new Vector2(topLeft.Width, 0);
 
             Vector2 drawM = drawT + new Vector2(0, topMiddle.Height);
 
-            Vector2 bottomRight = new Vector2(drawM.X + (Middle.Width * scaleMiddleByHorizontally), drawM.Y + (Middle.Height * scaleMiddleByVertically));
-            DrawManager.Draw_Box(drawM, bottomRight, drawColor, sb, 0f, 150);
+            var bottomRight = new Vector2(drawM.X + (middle.Width * scaleMiddleByHorizontally), drawM.Y + (middle.Height * scaleMiddleByVertically));
+            DrawManager.DrawBox(drawM, bottomRight, drawColor, sb, 0f, 150);
         }
 
         /// <summary>
@@ -274,23 +271,21 @@ namespace GeeUI.Structs
         /// <param name="contentWidth">The width of the NinePatch content</param>
         /// <param name="contentHeight">The height of the NinePatch content</param>
         /// <returns></returns>
-        public Vector2 getCenter(int contentWidth, int contentHeight)
+        public Vector2 GetCenter(int contentWidth, int contentHeight)
         {
-            Rectangle topLeft = new Rectangle(1, 1, leftMostPatch - 1, topMostPatch - 1);
-            Rectangle topRight = new Rectangle(rightMostPatch + 1, 1, (texture.Width - 1) - rightMostPatch, topMostPatch - 1);
-            Rectangle topMiddle = new Rectangle(leftMostPatch, 1, (rightMostPatch - leftMostPatch), topMostPatch - 1);
-            Rectangle Left = new Rectangle(1, topMostPatch, leftMostPatch - 1, (bottomMostPatch - topMostPatch));
-            Rectangle Middle = new Rectangle(leftMostPatch, topMostPatch, (rightMostPatch - leftMostPatch), (bottomMostPatch - topMostPatch));
+            var topLeft = new Rectangle(1, 1, LeftMostPatch - 1, TopMostPatch - 1);
+            var topMiddle = new Rectangle(LeftMostPatch, 1, (RightMostPatch - LeftMostPatch), TopMostPatch - 1);
+            var left = new Rectangle(1, TopMostPatch, LeftMostPatch - 1, (BottomMostPatch - TopMostPatch));
 
 
             int topMiddleWidth = topMiddle.Width;
-            int leftMiddleHeight = Left.Height;
-            float scaleMiddleByHorizontally = ((float)contentWidth / (float)topMiddleWidth);
-            float scaleMiddleByVertically = ((float)contentHeight / (float)leftMiddleHeight);
+            int leftMiddleHeight = left.Height;
+            float scaleMiddleByHorizontally = (contentWidth / (float)topMiddleWidth);
+            float scaleMiddleByVertically = (contentHeight / (float)leftMiddleHeight);
             if (scaleMiddleByVertically < 1) scaleMiddleByVertically = 1;
             if (scaleMiddleByHorizontally < 1) scaleMiddleByHorizontally = 1;
 
-            Vector2 drawMMiddle = new Vector2(topLeft.Width, topLeft.Height);
+            var drawMMiddle = new Vector2(topLeft.Width, topLeft.Height);
             drawMMiddle += new Vector2(topMiddleWidth * (scaleMiddleByHorizontally / 2), leftMiddleHeight * (scaleMiddleByVertically / 2));
             return drawMMiddle;
         }
@@ -302,7 +297,7 @@ namespace GeeUI.Structs
         /// <param name="origin">The rotation point of the point</param>
         /// <param name="angle">The angle in degrees of the angle to rotate the point by.</param>
         /// <returns></returns>
-        public static Vector2 rotateAroundOrigin(Vector2 point, Vector2 origin, double angle)
+        public static Vector2 RotateAroundOrigin(Vector2 point, Vector2 origin, double angle)
         {
             Vector2 real = point - origin;
             Vector2 ret = Vector2.Zero;
@@ -322,7 +317,7 @@ namespace GeeUI.Structs
         /// <param name="point">The point to rotate</param>
         /// <param name="angle">The angle in degrees of the angle to rotate the point by.</param>
         /// <returns></returns>
-        public static Vector2 rotatePoint(Vector2 point, double angle)
+        public static Vector2 RotatePoint(Vector2 point, double angle)
         {
             Vector2 real = point;
             Vector2 ret = Vector2.Zero;

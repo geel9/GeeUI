@@ -1,67 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GeeUI.Views
 {
     public class ImageView : View
     {
-        public Texture2D texture;
-
-        public View buttonContentview
-        {
-            get
-            {
-                if (children.Length == 0)
-                {
-                    return null;
-                }
-                else
-                {
-                    return children[0];
-                }
-            }
-            set
-            {
-                if (this.children.Length == 0)
-                {
-                    addChild(value);
-                    return;
-                }
-                _children[0] = value;
-                reOrderChildren();
-            }
-        }
+        public Texture2D Texture;
 
         public override Rectangle BoundBox
         {
             get
             {
-                return new Rectangle((int)position.X, (int)position.Y, (int)scaledImageSize.X, (int)scaledImageSize.Y);
+                return new Rectangle((int)Position.X, (int)Position.Y, (int)ScaledImageSize.X, (int)ScaledImageSize.Y);
             }
         }
 
-        public Vector2 scaleVector
+        public Vector2 ScaleVector
         {
             get
             {
-                return new Vector2((float)width / (float)texture.Width, (float)height / (float)texture.Height);
+                return new Vector2(Width / (float)Texture.Width, Height / (float)Texture.Height);
             }
             set
             {
-                width = (int)((float)texture.Width * value.X);
-                height = (int)((float)texture.Height * value.Y);
+                Width = (int)(Texture.Width * value.X);
+                Height = (int)(Texture.Height * value.Y);
             }
         }
 
-        public Vector2 scaledImageSize
+        public Vector2 ScaledImageSize
         {
             get
             {
-                return new Vector2((float)width * scaleVector.X, (float)height * scaleVector.Y);
+                return new Vector2(Width * ScaleVector.X, Height * ScaleVector.Y);
             }
         }
 
@@ -69,39 +40,33 @@ namespace GeeUI.Views
         public ImageView(View rootView, Texture2D texture)
             : base(rootView)
         {
-            this.position = position;
-            this.texture = texture;
-            width = texture.Width;
-            height = texture.Height;
+            Texture = texture;
+            Width = texture.Width;
+            Height = texture.Height;
         }
 
-        protected internal override void onMClick(Vector2 position, bool fromChild = false)
+        protected internal override void OnMClick(Vector2 position, bool fromChild = false)
         {
-            base.onMClick(position);
+            base.OnMClick(position);
         }
-        protected internal override void onMClickAway(bool fromChild = false)
+        protected internal override void OnMClickAway(bool fromChild = false)
         {
             //base.onMClickAway();
         }
 
-        protected internal override void onMOver(bool fromChild = false)
+        protected internal override void OnMOver(bool fromChild = false)
         {
-            base.onMOver();
+            base.OnMOver();
         }
-        protected internal override void onMOff(bool fromChild = false)
+        protected internal override void OnMOff(bool fromChild = false)
         {
-            base.onMOff();
-        }
-
-        protected internal override void Update(GameTime theTime)
-        {
-            base.Update(theTime);
+            base.OnMOff();
         }
 
         protected internal override void Draw(SpriteBatch spriteBatch)
         {
 
-            spriteBatch.Draw(texture, absolutePosition, null, Color.White, 0f, Vector2.Zero, scaleVector, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Texture, AbsolutePosition, null, Color.White, 0f, Vector2.Zero, ScaleVector, SpriteEffects.None, 0f);
 
             base.Draw(spriteBatch);
         }

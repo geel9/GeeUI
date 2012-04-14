@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using GeeUI.Structs;
+﻿using GeeUI.Structs;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using GeeUI.Managers;
@@ -11,43 +7,36 @@ namespace GeeUI.Views
 {
     public class WindowView : View
     {
-        public NinePatch ninePatchSelected = new NinePatch();
-        public NinePatch ninePatchNormal = new NinePatch();
+        public NinePatch NinePatchSelected = new NinePatch();
+        public NinePatch NinePatchNormal = new NinePatch();
 
-        public string windowText = "Hello this is a VIEW!";
-        public SpriteFont windowTextFont = null;
+        public string WindowText = "Hello this is a VIEW!";
+        public SpriteFont WindowTextFont;
 
-        protected internal bool selectedOffChildren = false;
-        protected internal Vector2 lastMousePosition = Vector2.Zero;
-        protected internal Vector2 mouseSelectedOffset = Vector2.Zero;
+        protected internal bool SelectedOffChildren;
+        protected internal Vector2 LastMousePosition = Vector2.Zero;
+        protected internal Vector2 MouseSelectedOffset = Vector2.Zero;
 
         /// <summary>
         /// If true, the window can be dragged by the user.
         /// </summary>
-        public bool draggable = true;
+        public bool Draggable = true;
 
-        public View windowContentView
+        public View WindowContentView
         {
             get
             {
-                if (children.Length == 0)
-                {
-                    return null;
-                }
-                else
-                {
-                    return children[0];
-                }
+                return Children.Length == 0 ? null : Children[0];
             }
             set
             {
-                if (this.children.Length == 0)
+                if (Children.Length == 0)
                 {
-                    addChild(value);
+                    AddChild(value);
                     return;
                 }
                 _children[0] = value;
-                reOrderChildren();
+                ReOrderChildren();
             }
         }
 
@@ -55,14 +44,14 @@ namespace GeeUI.Views
         {
             get
             {
-                NinePatch patch = selected ? ninePatchSelected : ninePatchNormal;
-                Rectangle childBoundBox = windowContentView.BoundBox;
-                Vector2 windowTextSize = windowTextFont.MeasureString(windowText);
-                int height = (int)(patch.topHeight + patch.bottomHeight + windowTextSize.Y + childBoundBox.Height);
+                NinePatch patch = Selected ? NinePatchSelected : NinePatchNormal;
+                Rectangle childBoundBox = WindowContentView.BoundBox;
+                Vector2 windowTextSize = WindowTextFont.MeasureString(WindowText);
+                var height = (int)(patch.TopHeight + patch.BottomHeight + windowTextSize.Y + childBoundBox.Height);
 
                 //The width of the content view is the width of the window title bar
-                int width = (int)(childBoundBox.Width);
-                return new Rectangle((int)position.X, (int)position.Y, width, height);
+                var width = childBoundBox.Width;
+                return new Rectangle((int)Position.X, (int)Position.Y, width, height);
             }
         }
 
@@ -70,7 +59,7 @@ namespace GeeUI.Views
         {
             get
             {
-                return windowContentView.BoundBox;
+                return WindowContentView.BoundBox;
             }
         }
 
@@ -78,84 +67,84 @@ namespace GeeUI.Views
         {
             get
             {
-                return windowContentView.AbsoluteBoundBox;
+                return WindowContentView.AbsoluteBoundBox;
             }
         }
 
         public WindowView(View rootView, Vector2 position, SpriteFont windowTextFont)
             : base(rootView)
         {
-            this.position = position;
-            this.windowTextFont = windowTextFont;
-            ninePatchNormal = GeeUI.ninePatch_windowUnselected;
-            ninePatchSelected = GeeUI.ninePatch_windowSelected;
+            Position = position;
+            WindowTextFont = windowTextFont;
+            NinePatchNormal = GeeUI.NinePatchWindowUnselected;
+            NinePatchSelected = GeeUI.NinePatchWindowSelected;
         }
 
         protected internal void FollowMouse()
         {
-            if (!draggable) return;
+            if (!Draggable) return;
             Vector2 newMousePosition = InputManager.GetMousePosV();
-            if (selectedOffChildren && selected && InputManager.isLeftMousePressed())
+            if (SelectedOffChildren && Selected && InputManager.IsMousePressed(MouseButton.Left))
             {
-                position = (newMousePosition - mouseSelectedOffset);
+                Position = (newMousePosition - MouseSelectedOffset);
             }
-            lastMousePosition = newMousePosition;
+            LastMousePosition = newMousePosition;
         }
 
         protected internal override void Draw(SpriteBatch spriteBatch)
         {
-            NinePatch patch = selected ? ninePatchSelected : ninePatchNormal;
-            patch.Draw(spriteBatch, absolutePosition, windowContentView.BoundBox.Width - (patch.leftWidth + patch.rightWidth), (int)windowTextFont.MeasureString(windowText).Y);
-            string text = TextView.TruncateString(windowText, windowTextFont, windowContentView.ContentBoundBox.Width);
-            spriteBatch.DrawString(windowTextFont, text, absolutePosition + new Vector2(patch.leftWidth, patch.topHeight), Color.Black);
+            NinePatch patch = Selected ? NinePatchSelected : NinePatchNormal;
+            patch.Draw(spriteBatch, AbsolutePosition, WindowContentView.BoundBox.Width - (patch.LeftWidth + patch.RightWidth), (int)WindowTextFont.MeasureString(WindowText).Y);
+            string text = TextView.TruncateString(WindowText, WindowTextFont, WindowContentView.ContentBoundBox.Width);
+            spriteBatch.DrawString(WindowTextFont, text, AbsolutePosition + new Vector2(patch.LeftWidth, patch.TopHeight), Color.Black);
             base.Draw(spriteBatch);
         }
 
         protected internal override void Update(GameTime theTime)
         {
             FollowMouse();
-            if (windowContentView != null)
+            if (WindowContentView != null)
             {
-                NinePatch patch = selected ? ninePatchSelected : ninePatchNormal;
-                Vector2 windowTextSize = windowTextFont.MeasureString(windowText);
-                int height = (int)(patch.topHeight + patch.bottomHeight + windowTextSize.Y);
-                windowContentView.position = new Vector2(0, height);
+                NinePatch patch = Selected ? NinePatchSelected : NinePatchNormal;
+                Vector2 windowTextSize = WindowTextFont.MeasureString(WindowText);
+                var height = (int)(patch.TopHeight + patch.BottomHeight + windowTextSize.Y);
+                WindowContentView.Position = new Vector2(0, height);
             }
 
             base.Update(theTime);
         }
 
-        protected internal override void onMClick(Microsoft.Xna.Framework.Vector2 position, bool fromChild = false)
+        protected internal override void OnMClick(Vector2 position, bool fromChild = false)
         {
-            selectedOffChildren = !fromChild;
-            selected = true;
-            windowContentView.selected = true;
-            lastMousePosition = position;
-            mouseSelectedOffset = position - this.position;
+            SelectedOffChildren = !fromChild;
+            Selected = true;
+            WindowContentView.Selected = true;
+            LastMousePosition = position;
+            MouseSelectedOffset = position - Position;
 
-            if(parentView != null)
-            parentView.bringChildToFront(this);
+            if(ParentView != null)
+            ParentView.BringChildToFront(this);
             FollowMouse();
-            base.onMClick(position, true);
+            base.OnMClick(position, true);
         }
 
-        protected internal override void onMClickAway(bool fromChild = false)
+        protected internal override void OnMClickAway(bool fromChild = false)
         {
-            selectedOffChildren = false;
-            selected = false;
-            windowContentView.selected = false;
-            base.onMClickAway(true);
+            SelectedOffChildren = false;
+            Selected = false;
+            WindowContentView.Selected = false;
+            base.OnMClickAway(true);
         }
-        protected internal override void onMOff(bool fromChild = false)
+        protected internal override void OnMOff(bool fromChild = false)
         {
             FollowMouse();
-            base.onMOff(true);
+            base.OnMOff(true);
         }
 
-        protected internal override void onMOver(bool fromChild = false)
+        protected internal override void OnMOver(bool fromChild = false)
         {
             FollowMouse();
-            base.onMOver(fromChild);
+            base.OnMOver(fromChild);
         }
     }
 }

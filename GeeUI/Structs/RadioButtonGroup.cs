@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using GeeUI.Views;
-
-namespace GeeUI.Structs
+﻿namespace GeeUI.Structs
 {
     public class RadioButtonGroup
     {

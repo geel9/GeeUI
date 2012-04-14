@@ -81,6 +81,9 @@
     <Compile Include="Views\ImageView.cs" />
     <Compile Include="Views\PanelView.cs" />
     <Compile Include="Views\SliderView.cs" />
+    <Compile Include="Views\TabContainer.cs" />
+    <Compile Include="Views\TabHost.cs" />
+    <Compile Include="Views\TabView.cs" />
     <Compile Include="Views\TextFieldView.cs" />
     <Compile Include="Views\TextView.cs" />
     <Compile Include="Views\View.cs" />

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -12,21 +9,20 @@ namespace GeeUI.Views
 {
     public class TextFieldView : View
     {
-        public NinePatch ninePatchDefault;
-        public NinePatch ninePatchSelected;
+        public NinePatch NinePatchDefault;
+        public NinePatch NinePatchSelected;
 
-        public SpriteFont textInputFont;
+        public SpriteFont TextInputFont;
 
-        public bool multiLine = true;
-        public bool editable = true;
+        public bool MultiLine = true;
+        public bool Editable = true;
 
         private string _text = "";
-        public string text
+        public string Text
         {
             get
             {
-                if (multiLine) return _text;
-                return _text.Replace("\n", "");
+                return MultiLine ? _text : _text.Replace("\n", "");
             }
             set
             {
@@ -34,44 +30,49 @@ namespace GeeUI.Views
             }
         }
 
-        private int offsetX = 0, offsetY = 0, cursorX = 0, cursorY = 0;
-        private Vector2 selectionStart = new Vector2(-1), selectionEnd = new Vector2(-1);
+        private int _offsetX;
+        private int _offsetY;
+        private int _cursorX;
+        private int _cursorY;
 
-        private int buttonHeldTime = 0;
+        private Vector2 _selectionStart = new Vector2(-1);
+        private Vector2 _selectionEnd = new Vector2(-1);
+
+        private int _buttonHeldTime;
 
         //How long to press before repeating
-        private int buttonHeldTimePreRepeat = 2;
-        private string buttonHeldString = "";
-        private Keys buttonHeld = Keys.None;
+        private int _buttonHeldTimePreRepeat = 2;
+        private string _buttonHeldString = "";
+        private Keys _buttonHeld = Keys.None;
 
-        int delimiterTime = 0, delimiterLimit = 25;
-        bool doingDelimiter = false;
+        int _delimiterTime;
+        private const int DelimiterLimit = 25;
+        bool _doingDelimiter;
 
-        public string offsetText
+        public string OffsetText
         {
             get
             {
-                string ret = "";
-                string[] lines = textLines;
-                NinePatch patch = selected ? ninePatchSelected : ninePatchDefault;
-                int allowedWidth = width;
-                int allowedHeight = height;
-                for (int y = offsetY; y < lines.Length; y++)
+                var ret = "";
+                var lines = TextLines;
+                var allowedWidth = Width;
+                var allowedHeight = Height;
+                for (var iY = _offsetY; iY < lines.Length; iY++)
                 {
-                    string curLine = lines[y];
-                    string curLineRet = "";
-                    for (int x = offsetX; x < curLine.Length; x++)
+                    var curLine = lines[iY];
+                    var curLineRet = "";
+                    for (int iX = _offsetX; iX < curLine.Length; iX++)
                     {
-                        int lineWidth = (int)textInputFont.MeasureString(curLineRet + curLine[x]).X;
+                        var lineWidth = (int)TextInputFont.MeasureString(curLineRet + curLine[iX]).X;
                         if (lineWidth >= allowedWidth)
                         {
                             break;
                         }
-                        curLineRet += curLine[x];
+                        curLineRet += curLine[iX];
                     }
-                    string retTest = ret + curLineRet + (y + 1 != lines.Length ? "\n" : "");
-                    int maxHeight = (int)textInputFont.MeasureString(retTest).Y;
-                    ret += curLineRet + (y + 1 != lines.Length ? "\n" : "");
+                    var retTest = ret + curLineRet + (iY + 1 != lines.Length ? "\n" : "");
+                    var maxHeight = (int)TextInputFont.MeasureString(retTest).Y;
+                    ret += curLineRet + (iY + 1 != lines.Length ? "\n" : "");
                     if (maxHeight >= allowedHeight)
                         break;
                 }
@@ -80,11 +81,11 @@ namespace GeeUI.Views
         }
 
 
-        public string[] textLines
+        public string[] TextLines
         {
             get
             {
-                return text.Split('\n');
+                return Text.Split('\n');
             }
             set
             {
@@ -95,68 +96,46 @@ namespace GeeUI.Views
                     if (i < value.Length - 1)
                         cur += "\n";
                 }
-                text = cur;
+                Text = cur;
             }
         }
 
-        public override Microsoft.Xna.Framework.Rectangle BoundBox
-        {
-            get
-            {
-                return base.BoundBox;
-            }
-        }
-
-        public override Microsoft.Xna.Framework.Rectangle ContentBoundBox
-        {
-            get
-            {
-                return base.ContentBoundBox;
-            }
-        }
 
         public TextFieldView(View rootView, Vector2 position, SpriteFont textFont)
             : base(rootView)
         {
-            ninePatchDefault = GeeUI.ninePatch_textFieldDefault;
-            ninePatchSelected = GeeUI.ninePatch_textFieldSelected;
+            NinePatchDefault = GeeUI.NinePatchTextFieldDefault;
+            NinePatchSelected = GeeUI.NinePatchTextFieldSelected;
 
-            this.position = position;
-            this.textInputFont = textFont;
-            numChildrenAllowed = -1;
+            Position = position;
+            TextInputFont = textFont;
+            NumChildrenAllowed = -1;
 
-            GeeUI.OnKeyPressedHandler += new OnKeyPressed(keyPressedHandler);
-            GeeUI.OnKeyReleasedHandler += new OnKeyReleased(keyReleasedHandler);
+            GeeUI.OnKeyPressedHandler += keyPressedHandler;
+            GeeUI.OnKeyReleasedHandler += keyReleasedHandler;
         }
 
         void keyReleasedHandler(string keyReleased, Keys key)
         {
-            if (buttonHeld == key)
-            {
-                buttonHeldTime = 0;
-                buttonHeld = Keys.None;
-                buttonHeldTimePreRepeat = 0;
-                buttonHeldString = "";
-            }
+            if (_buttonHeld != key) return;
+            _buttonHeldTime = 0;
+            _buttonHeld = Keys.None;
+            _buttonHeldTimePreRepeat = 0;
+            _buttonHeldString = "";
         }
 
-
-        private bool isSpecialKey(Keys key)
-        {
-            return false;
-        }
 
         void keyPressedHandler(string keyPressed, Keys key)
         {
-            if (!selected || !editable) return;
-            if (buttonHeld != key)
+            if (!Selected || !Editable) return;
+            if (_buttonHeld != key)
             {
-                buttonHeld = key;
-                buttonHeldTime = 0;
-                buttonHeldTimePreRepeat = 0;
-                buttonHeldString = keyPressed;
+                _buttonHeld = key;
+                _buttonHeldTime = 0;
+                _buttonHeldTimePreRepeat = 0;
+                _buttonHeldString = keyPressed;
             }
-            bool ctrlPressed = InputManager.isKeyPressed(Keys.LeftControl) || InputManager.isKeyPressed(Keys.RightControl);
+            bool ctrlPressed = InputManager.IsKeyPressed(Keys.LeftControl) || InputManager.IsKeyPressed(Keys.RightControl);
 
             if (ctrlPressed)
             {
@@ -183,134 +162,132 @@ namespace GeeUI.Views
                 switch (key)
                 {
                     case Keys.Back:
-                       string[] lines = textLines;
-                        string line = lines[cursorY];
-                        int curPos = cursorX;
-                        for (int i = 0; i < cursorY; i++)
+                        var lines = TextLines;
+                        var curPos = _cursorX;
+                        for (var i = 0; i < _cursorY; i++)
                         {
-                            string lineL = lines[i] + (i < cursorY ? "\n" : "");
+                            var lineL = lines[i] + (i < _cursorY ? "\n" : "");
                             curPos += lineL.Length;
                         }
                         if (curPos > 0)
                         {
-                            text = text.Remove(curPos - 1, 1);
-                            cursorX--;
+                            Text = Text.Remove(curPos - 1, 1);
+                            _cursorX--;
                         }
-                        if (cursorX < 0)
+                        if (_cursorX < 0)
                         {
-                            cursorX = lines[cursorY - 1].Length;
-                            cursorY--;
+                            _cursorX = lines[_cursorY - 1].Length;
+                            _cursorY--;
                         }
 
                         break;
                     case Keys.Left:
-                        moveCursorX(-1);
+                        MoveCursorX(-1);
                         break;
                     case Keys.Right:
-                        moveCursorX(1);
+                        MoveCursorX(1);
                         break;
                     case Keys.Up:
-                        moveCursorY(-1);
+                        MoveCursorY(-1);
                         break;
                     case Keys.Down:
-                        moveCursorY(1);
+                        MoveCursorY(1);
                         break;
                     case Keys.Enter:
-                        appendTextCursor("\n");
+                        AppendTextCursor("\n");
                         break;
                     case Keys.Space:
-                        appendTextCursor(" ");
+                        AppendTextCursor(" ");
                         break;
                     default:
-                        appendTextCursor(keyPressed);
+                        AppendTextCursor(keyPressed);
                         break;
                 }
             }
-            reEvaluateOffset();
+            ReEvaluateOffset();
         }
 
-        private void moveCursorX(int xMovement)
+        private void MoveCursorX(int xMovement)
         {
-            string[] lines = textLines;
-            cursorX += xMovement;
-            if (cursorX < 0)
+            string[] lines = TextLines;
+            _cursorX += xMovement;
+            if (_cursorX < 0)
             {
-                int yMinus = cursorY - 1;
+                int yMinus = _cursorY - 1;
                 if (yMinus < 0)
                 {
-                    cursorX = 0;
+                    _cursorX = 0;
                 }
                 else
                 {
                     string line = lines[yMinus];
-                    cursorX = line.Length;
-                    cursorY = yMinus;
+                    _cursorX = line.Length;
+                    _cursorY = yMinus;
                 }
             }
-            else if (cursorX > lines[cursorY].Length)
+            else if (_cursorX > lines[_cursorY].Length)
             {
-                if (cursorY < lines.Length - 1)
+                if (_cursorY < lines.Length - 1)
                 {
-                    cursorY++;
-                    cursorX = 0;
+                    _cursorY++;
+                    _cursorX = 0;
                 }
                 else
                 {
-                    cursorX = lines[cursorY].Length;
+                    _cursorX = lines[_cursorY].Length;
                 }
             }
 
-            reEvaluateOffset();
+            ReEvaluateOffset();
         }
 
-        private void moveCursorY(int yMovement)
+        private void MoveCursorY(int yMovement)
         {
-            string[] lines = textLines;
-            cursorY += yMovement;
-            if (cursorY >= lines.Length) cursorY = lines.Length - 1;
-            else if (cursorY < 0) cursorY = 0;
-            string line = lines[cursorY];
-            if (cursorX >= line.Length) cursorX = line.Length;
+            string[] lines = TextLines;
+            _cursorY += yMovement;
+            if (_cursorY >= lines.Length) _cursorY = lines.Length - 1;
+            else if (_cursorY < 0) _cursorY = 0;
+            string line = lines[_cursorY];
+            if (_cursorX >= line.Length) _cursorX = line.Length;
 
-            reEvaluateOffset();
+            ReEvaluateOffset();
         }
 
-        private void reEvaluateOffset()
+        private void ReEvaluateOffset()
         {
-            if(selectionStart == selectionEnd)
-                selectionEnd = selectionStart = Vector2.Zero;
-            string ret = "";
-            string[] lines = textLines;
-            NinePatch patch = selected ? ninePatchSelected : ninePatchDefault;
-            int allowedWidth = width;
-            int allowedHeight = height;
+            if(_selectionStart == _selectionEnd)
+                _selectionEnd = _selectionStart = Vector2.Zero;
+            var ret = "";
+            var lines = TextLines;
+            var allowedWidth = Width;
+            var allowedHeight = Height;
 
-            int maxCharX = 0;
-            int maxCharY = 0;
+            var maxCharX = 0;
+            var maxCharY = 0;
 
-            int xDiff = cursorX - offsetX;
-            int yDiff = cursorY - offsetY;
+            var xDiff = _cursorX - _offsetX;
+            var yDiff = _cursorY - _offsetY;
 
-            if (xDiff < 0) offsetX += xDiff;
-            if (yDiff < 0) offsetY += yDiff;
+            if (xDiff < 0) _offsetX += xDiff;
+            if (yDiff < 0) _offsetY += yDiff;
 
-            for (int y = offsetY; y < lines.Length; y++)
+            for (var iY = _offsetY; iY < lines.Length; iY++)
             {
-                string curLine = lines[y];
-                string curLineRet = "";
-                for (int x = offsetX; x < curLine.Length; x++)
+                var curLine = lines[iY];
+                var curLineRet = "";
+                for (var iX = _offsetX; iX < curLine.Length; iX++)
                 {
-                    int lineWidth = (int)textInputFont.MeasureString(curLineRet + curLine[x]).X;
+                    var lineWidth = (int)TextInputFont.MeasureString(curLineRet + curLine[iX]).X;
                     if (lineWidth >= allowedWidth)
                     {
                         break;
                     }
-                    curLineRet += curLine[x];
-                    if (y == cursorY)
+                    curLineRet += curLine[iX];
+                    if (iY == _cursorY)
                         maxCharX++;
                 }
-                ret += curLineRet + (y + 1 != lines.Length ? "\n" : "");
-                int lineHeight = (int)textInputFont.MeasureString(ret).Y;
+                ret += curLineRet + (iY + 1 != lines.Length ? "\n" : "");
+                var lineHeight = (int)TextInputFont.MeasureString(ret).Y;
                 if (lineHeight >= allowedHeight)
                 {
                     break;
@@ -318,64 +295,61 @@ namespace GeeUI.Views
                 maxCharY++;
             }
             if (maxCharX < xDiff)
-                offsetX += xDiff - maxCharX;
-            if (maxCharY < yDiff) offsetY++;
+                _offsetX += xDiff - maxCharX;
+            if (maxCharY < yDiff) _offsetY++;
         }
 
-        private void appendTextCursor(string text)
+        private void AppendTextCursor(string text)
         {
-            string[] lines = textLines;
-            string curLine = lines[cursorY];
-            string before = curLine.Substring(0, cursorX);
-            string after = (cursorX < curLine.Length) ? curLine.Substring(cursorX) : "";
-            lines[cursorY] = before + text + after;
-            textLines = lines;
-            moveCursorX(text.Length);
+            string[] lines = TextLines;
+            string curLine = lines[_cursorY];
+            string before = curLine.Substring(0, _cursorX);
+            string after = (_cursorX < curLine.Length) ? curLine.Substring(_cursorX) : "";
+            lines[_cursorY] = before + text + after;
+            TextLines = lines;
+            MoveCursorX(text.Length);
         }
 
-        public void appendText(string text)
+        public void AppendText(string text)
         {
-            this.text += text;
-            //reEvaluateOffset();
+            Text += text;
         }
 
-        public Vector2 getMouseTextPos(Vector2 position)
+        public Vector2 GetMouseTextPos(Vector2 pos)
         {
-            string[] lines = textLines;
+            var lines = TextLines;
 
-            NinePatch patch = selected ? ninePatchSelected : ninePatchDefault;
+            var patch = Selected ? NinePatchSelected : NinePatchDefault;
 
-            Vector2 topLeftContentPos = absolutePosition + new Vector2(patch.leftWidth, patch.topHeight);
-            Vector2 actualClickPos = position - topLeftContentPos;
+            var topLeftContentPos = AbsolutePosition + new Vector2(patch.LeftWidth, patch.TopHeight);
+            var actualClickPos = pos - topLeftContentPos;
 
-            Vector2 ret = new Vector2();
+            var ret = new Vector2();
 
-            string actualText = "";
+            var actualText = "";
 
-            for (int y = offsetY; y < lines.Length; y++)
+            for (var iY = _offsetY; iY < lines.Length; iY++)
             {
-                int textHeight = (int)textInputFont.MeasureString(actualText + lines[y]).Y;
+                var textHeight = (int)TextInputFont.MeasureString(actualText + lines[iY]).Y;
                 if (textHeight >= actualClickPos.Y)
                 {
-                    ret.Y = y;
+                    ret.Y = iY;
 
-                    string line = lines[y];
+                    var line = lines[iY];
 
                     //No need to make another variable
                     actualText = "";
 
                     bool setX = false;
 
-                    for (int x = offsetX; x < line.Length; x++)
+                    for (int iX = _offsetX; iX < line.Length; iX++)
                     {
-                        actualText += line[x];
-                        int textWidth = (int)textInputFont.MeasureString(actualText).X;
-                        if (textWidth >= actualClickPos.X)
-                        {
-                            ret.X = x;
-                            setX = true;
-                            break;
-                        }
+                        actualText += line[iX];
+                        var textWidth = (int)TextInputFont.MeasureString(actualText).X;
+                        if (textWidth < actualClickPos.X) continue;
+                        ret.X = iX;
+                        setX = true;
+                        break;
                     }
 
                     if (!setX)
@@ -383,84 +357,83 @@ namespace GeeUI.Views
 
                     break;
                 }
-                actualText += lines[y] + "\n";
+                actualText += lines[iY] + "\n";
             }
             return ret;
         }
 
-        protected internal override void onMClick(Vector2 position, bool fromChild = false)
+        protected internal override void OnMClick(Vector2 mousePosition, bool fromChild = false)
         {
-            selected = true;
+            Selected = true;
 
-            Vector2 clickPos = getMouseTextPos(position);
-            cursorX = (int)clickPos.X;
-            cursorY = (int)clickPos.Y;
+            var clickPos = GetMouseTextPos(mousePosition);
+            _cursorX = (int)clickPos.X;
+            _cursorY = (int)clickPos.Y;
 
-            selectionStart = clickPos;
+            _selectionStart = clickPos;
 
-            base.onMClick(position);
+            base.OnMClick(mousePosition);
         }
 
-        protected internal override void onMClickAway(bool fromChild = false)
+        protected internal override void OnMClickAway(bool fromChild = false)
         {
-            selected = false;
-            selectionEnd = selectionStart = new Vector2(-1);
-            //base.onMClickAway();
+            Selected = false;
+            _selectionEnd = _selectionStart = new Vector2(-1);
         }
 
-        protected internal override void onMOver(bool fromChild = false)
+        protected internal override void OnMOver(bool fromChild = false)
         {
-            if (selected && InputManager.isLeftMousePressed())
+            if (Selected && InputManager.IsMousePressed(MouseButton.Left))
             {
-                Vector2 clickPos = getMouseTextPos(InputManager.GetMousePosV());
-                selectionEnd = clickPos;
+                var clickPos = GetMouseTextPos(InputManager.GetMousePosV());
+                _selectionEnd = clickPos;
             }
-            base.onMOver();
+            base.OnMOver();
         }
-        protected internal override void onMOff(bool fromChild = false)
+        protected internal override void OnMOff(bool fromChild = false)
         {
-            base.onMOff();
+            base.OnMOff();
         }
 
-        private Vector2 getDrawPosForCursorPos(int cursorX, int cursorY)
+        private Vector2 GetDrawPosForCursorPos(int cursorX, int cursorY)
         {
-            NinePatch patch = selected ? ninePatchSelected : ninePatchDefault;
-            string[] lines = textLines;
+            var patch = Selected ? NinePatchSelected : NinePatchDefault;
+            var lines = TextLines;
 
-            string totalLine = "";
-            for (int i = offsetY; i < cursorY && i < lines.Length; i++)
+            var totalLine = "";
+            for (int i = _offsetY; i < cursorY && i < lines.Length; i++)
             {
-                string line = lines[i];
-                bool addNewline = (i < cursorY - 1) || (i == cursorY && line.Length == 0);
-                bool addSpace = (line.Length == 0);
+                var line = lines[i];
+                var addNewline = (i < cursorY - 1) || (i == cursorY && line.Length == 0);
+                var addSpace = (line.Length == 0);
                 line += (addNewline ? "\n" : "");
                 line += (addSpace ? " " : "");
                 totalLine += line;
             }
 
-            int yDrawPos = (int)(absolutePosition.Y + patch.topHeight + textInputFont.MeasureString(totalLine).Y);
-            string yDrawLine = lines[cursorY];
-            string cur = "";
-            for (int x = offsetX; x < cursorX && x < yDrawLine.Length; x++)
+            var yDrawPos = (int)(AbsolutePosition.Y + patch.TopHeight + TextInputFont.MeasureString(totalLine).Y);
+            var yDrawLine = lines[cursorY];
+            var cur = "";
+            for (var x = _offsetX; x < cursorX && x < yDrawLine.Length; x++)
                 cur += yDrawLine[x];
-            int xDrawPos = (int)textInputFont.MeasureString(cur).X + (int)(absolutePosition.X + patch.leftWidth);
+            var xDrawPos = (int)TextInputFont.MeasureString(cur).X + (int)(AbsolutePosition.X + patch.LeftWidth);
 
             return new Vector2(xDrawPos, yDrawPos);
         }
 
         protected internal override void Update(GameTime theTime)
         {
-            if (InputManager.isKeyPressed(buttonHeld))
+            if (InputManager.IsKeyPressed(_buttonHeld))
             {
-                if (!(buttonHeldTimePreRepeat++ < 15 || buttonHeldTime++ < 2))
+                if (!(_buttonHeldTimePreRepeat++ < 15 || _buttonHeldTime++ < 2))
                 {
-                    buttonHeldTime = 0;
-                    keyPressedHandler(buttonHeldString, buttonHeld);
+                    _buttonHeldTime = 0;
+                    keyPressedHandler(_buttonHeldString, _buttonHeld);
                 }
             }
             else
             {
-                keyReleasedHandler("", buttonHeld);
+                keyReleasedHandler("", _buttonHeld);
             }
             base.Update(theTime);
         }
@@ -468,38 +441,38 @@ namespace GeeUI.Views
 
         protected internal override void Draw(SpriteBatch spriteBatch)
         {
-            NinePatch patch = selected ? ninePatchSelected : ninePatchDefault;
-            patch.Draw(spriteBatch, absolutePosition, width, height);
+            var patch = Selected ? NinePatchSelected : NinePatchDefault;
+            patch.Draw(spriteBatch, AbsolutePosition, Width, Height);
 
-            spriteBatch.DrawString(textInputFont, offsetText, absolutePosition + new Vector2(patch.leftWidth, patch.topHeight), Color.Black);
+            spriteBatch.DrawString(TextInputFont, OffsetText, AbsolutePosition + new Vector2(patch.LeftWidth, patch.TopHeight), Color.Black);
 
-            Vector2 drawPos = getDrawPosForCursorPos(cursorX, cursorY);
-            float xDrawPos = drawPos.X;
-            float yDrawPos = drawPos.Y;
+            var drawPos = GetDrawPosForCursorPos(_cursorX, _cursorY);
+            var xDrawPos = drawPos.X;
+            var yDrawPos = drawPos.Y;
 
-            if (selectionStart != new Vector2(-1) && selectionEnd != new Vector2(-1))
+            if (_selectionStart != new Vector2(-1) && _selectionEnd != new Vector2(-1))
             {
-                Vector2 start = selectionStart;
-                Vector2 end = selectionEnd;
-                if (selectionStart.Y > selectionEnd.Y || (selectionStart.Y == selectionEnd.Y && selectionStart.X > selectionEnd.X))
+                var start = _selectionStart;
+                var end = _selectionEnd;
+                if (_selectionStart.Y > _selectionEnd.Y || (_selectionStart.Y == _selectionEnd.Y && _selectionStart.X > _selectionEnd.X))
                 {
                     //Need to swap the variables.
-                    Vector2 store = start;
+                    var store = start;
                     start = end;
                     end = store;
                 }
-                Vector2 drawSS = getDrawPosForCursorPos((int)start.X, (int)start.Y);
-                Vector2 drawSE = getDrawPosForCursorPos((int)end.X, (int)end.Y);
-                spriteBatch.DrawString(textInputFont, "|", new Vector2(drawSS.X - 1, drawSS.Y), Color.Red);
-                spriteBatch.DrawString(textInputFont, "|", new Vector2(drawSE.X - 1, drawSE.Y), Color.Green);
+                var drawSS = GetDrawPosForCursorPos((int)start.X, (int)start.Y);
+                var drawSE = GetDrawPosForCursorPos((int)end.X, (int)end.Y);
+                spriteBatch.DrawString(TextInputFont, "|", new Vector2(drawSS.X - 1, drawSS.Y), Color.Red);
+                spriteBatch.DrawString(TextInputFont, "|", new Vector2(drawSE.X - 1, drawSE.Y), Color.Green);
             }
 
-            if (delimiterTime++ % delimiterLimit == 0)
+            if (_delimiterTime++ % DelimiterLimit == 0)
             {
-                doingDelimiter = !doingDelimiter;
+                _doingDelimiter = !_doingDelimiter;
             }
-            if (doingDelimiter && selected)
-                spriteBatch.DrawString(textInputFont, "|", new Vector2(xDrawPos - 1, yDrawPos), Color.Black);
+            if (_doingDelimiter && Selected)
+                spriteBatch.DrawString(TextInputFont, "|", new Vector2(xDrawPos - 1, yDrawPos), Color.Black);
             base.Draw(spriteBatch);
         }
     }
