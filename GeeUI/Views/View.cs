@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using GeeUI.Structs;
+using GeeUI.ViewLayouts;
 
 namespace GeeUI.Views
 {
@@ -17,6 +18,8 @@ namespace GeeUI.Views
         public event MouseOffEventHandler OnMouseOff;
 
         public View ParentView;
+
+        public ViewLayout ChildrenLayout;
 
         public int ChildrenDepth;
         public int ThisDepth;
@@ -90,7 +93,7 @@ namespace GeeUI.Views
             }
             set
             {
-                Position.X = value;
+                Position = new Vector2(value, Y);
             }
         }
         public int Y
@@ -101,9 +104,10 @@ namespace GeeUI.Views
             }
             set
             {
-                Position.Y = value;
+                Position = new Vector2(X, value);
             }
         }
+
         public Vector2 Position = Vector2.Zero;
 
         public int AbsoluteX
@@ -166,15 +170,20 @@ namespace GeeUI.Views
             child.ParentView = this;
             child.ThisDepth = ChildrenDepth++;
             _children.Add(child);
+            //child.Position += new Vector2(ContentBoundBox.Left, ContentBoundBox.Top);
         }
 
         public void RemoveChild(View child)
         {
             _children.Remove(child);
             child.ParentView = null;
-            ReOrderChildren();
+            ReOrderChildrenDepth();
         }
 
+        public virtual void OrderChildren(ViewLayout layout)
+        {
+            layout.OrderChildren(this);
+        }
         #endregion
 
         #region Parent management
@@ -208,7 +217,7 @@ namespace GeeUI.Views
 
         }
 
-        public void ReOrderChildren()
+        public void ReOrderChildrenDepth()
         {
             View[] sortedChildren = Children;
             Array.Sort(sortedChildren, ViewDepthComparer.CompareDepths);
@@ -259,21 +268,24 @@ namespace GeeUI.Views
             var xOffset = curBB.Right - parentBB.Right;
             var yOffset = curBB.Bottom - parentBB.Bottom;
             if (xOffset > 0)
-                Position.X -= xOffset;
+                X -= xOffset;
             else
             {
                 xOffset = curBB.Left - parentBB.Left;
                 if (xOffset < 0)
-                    Position.X -= xOffset;
+                    X -= xOffset;
             }
             if (yOffset > 0)
-                Position.Y -= yOffset;
+                Y -= yOffset;
             else
             {
                 yOffset = curBB.Top - parentBB.Top;
                 if (yOffset < 0)
-                    Position.Y -= yOffset;
+                    Y -= yOffset;
             }
+
+            if(ChildrenLayout != null)
+                OrderChildren(ChildrenLayout);
         }
 
         protected internal virtual void Draw(SpriteBatch spriteBatch)

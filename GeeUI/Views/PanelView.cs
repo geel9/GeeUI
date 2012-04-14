@@ -8,6 +8,8 @@ namespace GeeUI.Views
         public NinePatch UnselectedNinepatch = new NinePatch();
         public NinePatch SelectedNinepatch = new NinePatch();
 
+        private const int ChildrenPadding = 1;
+
         public override Rectangle BoundBox
         {
             get
@@ -24,7 +26,7 @@ namespace GeeUI.Views
             get
             {
                 NinePatch curPatch = Selected ? SelectedNinepatch : UnselectedNinepatch;
-                return new Rectangle((int)Position.X + curPatch.LeftWidth, (int)Position.Y + curPatch.TopHeight, Width, Height);
+                return new Rectangle((int)Position.X + curPatch.LeftWidth + ChildrenPadding, (int)Position.Y + curPatch.TopHeight + ChildrenPadding, Width - ChildrenPadding, Height - ChildrenPadding);
             }
         }
 

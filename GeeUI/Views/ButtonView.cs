@@ -25,7 +25,28 @@ namespace GeeUI.Views
                     return;
                 }
                 _children[0] = value;
-                ReOrderChildren();
+                ReOrderChildrenDepth();
+            }
+        }
+
+        public string Text
+        {
+            get
+            {
+                if(Children[0] is TextView)
+                {
+                    TextView c = (TextView) Children[0];
+                    return c.Text;
+                }
+                return "";
+            }
+            set
+            {
+                if (Children[0] is TextView)
+                {
+                    TextView c = (TextView)Children[0];
+                    c.Text = value;
+                }
             }
         }
 

@@ -36,7 +36,7 @@ namespace GeeUI.Views
                     return;
                 }
                 _children[0] = value;
-                ReOrderChildren();
+                ReOrderChildrenDepth();
             }
         }
 
@@ -59,17 +59,18 @@ namespace GeeUI.Views
         {
             get
             {
-                return WindowContentView.BoundBox;
+                NinePatch patch = Selected ? NinePatchSelected : NinePatchNormal;
+                Rectangle childBoundBox = WindowContentView.BoundBox;
+                Vector2 windowTextSize = WindowTextFont.MeasureString(WindowText);
+                var barHeight = (patch.TopHeight + patch.BottomHeight + windowTextSize.Y);
+                var height = childBoundBox.Height;
+
+                //The width of the content view is the width of the window title bar
+                var width = childBoundBox.Width;
+                return new Rectangle((int)Position.X, (int)Position.Y + (int)barHeight, width, height);
             }
         }
 
-        public override Rectangle AbsoluteContentBoundBox
-        {
-            get
-            {
-                return WindowContentView.AbsoluteBoundBox;
-            }
-        }
 
         public WindowView(View rootView, Vector2 position, SpriteFont windowTextFont)
             : base(rootView)
@@ -108,7 +109,7 @@ namespace GeeUI.Views
                 NinePatch patch = Selected ? NinePatchSelected : NinePatchNormal;
                 Vector2 windowTextSize = WindowTextFont.MeasureString(WindowText);
                 var height = (int)(patch.TopHeight + patch.BottomHeight + windowTextSize.Y);
-                WindowContentView.Position = new Vector2(0, height);
+                WindowContentView.Position = new Vector2(0, 0);
             }
 
             base.Update(theTime);
@@ -122,8 +123,8 @@ namespace GeeUI.Views
             LastMousePosition = position;
             MouseSelectedOffset = position - Position;
 
-            if(ParentView != null)
-            ParentView.BringChildToFront(this);
+            if (ParentView != null)
+                ParentView.BringChildToFront(this);
             FollowMouse();
             base.OnMClick(position, true);
         }

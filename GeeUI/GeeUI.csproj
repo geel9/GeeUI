@@ -76,6 +76,9 @@
     <Compile Include="Structs\NinePatch.cs" />
     <Compile Include="Structs\RadioButtonGroup.cs" />
     <Compile Include="Structs\ViewDepthComparer.cs" />
+    <Compile Include="ViewLayouts\HorizontalViewLayout.cs" />
+    <Compile Include="ViewLayouts\VerticalViewLayout.cs" />
+    <Compile Include="ViewLayouts\ViewLayout.cs" />
     <Compile Include="Views\ButtonView.cs" />
     <Compile Include="Views\CheckBoxView.cs" />
     <Compile Include="Views\ImageView.cs" />

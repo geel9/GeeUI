@@ -21,9 +21,10 @@ namespace GeeUI.Views
 
         public int AllTabsWidth
         {
-            get
-            {
-                return Children.Where(child => child is TabView).Cast<TabView>().Sum(v => v.BoundBox.Width);
+            get {
+                if (Children.Length == 0) return 0;
+                View last = Children[Children.Length - 1];
+                return (int)last.Position.X + last.BoundBox.Width;
             }
         }
 

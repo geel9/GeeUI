@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using GeeUI.ViewLayouts;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -21,7 +22,7 @@ namespace GeeUI.Views
                     return;
                 }
                 _children[0] = value;
-                ReOrderChildren();
+                ReOrderChildrenDepth();
             }
         }
 
@@ -44,6 +45,7 @@ namespace GeeUI.Views
         {
             Position = position;
             TabContainerView = new TabContainer(this, font);
+
         }
 
         internal View TabViewToView(TabView v)
@@ -55,6 +57,7 @@ namespace GeeUI.Views
         public void AddTab(string tabText, View newTab)
         {
             TabContainerView.AddTab(tabText, newTab);
+            TabContainerView.OrderChildren(new HorizontalViewLayout(1));
         }
 
         public void SetActiveTab(int index)
@@ -67,8 +70,10 @@ namespace GeeUI.Views
             for(int i = 1; i < Children.Length; i++)
             {
                 Children[i].Active = false;
+                Children[i].Selected = false;
             }
             Children[index + 1].Active = true;
+            Children[index + 1].Selected = true;
         }
 
         protected internal override void OnMClick(Vector2 position, bool fromChild = false)

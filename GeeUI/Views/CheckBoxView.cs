@@ -31,7 +31,7 @@ namespace GeeUI.Views
                     return;
                 }
                 _children[0] = value;
-                ReOrderChildren();
+                ReOrderChildrenDepth();
             }
         }
 

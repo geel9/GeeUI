@@ -1,3 +1,4 @@
+using GeeUI.ViewLayouts;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -50,14 +51,38 @@ namespace GeeUITestBed
             var panel = new PanelView(window, new Vector2(0, 0)) {Width = 500, Height = 400};
             var tabs = new TabHost(panel, new Vector2(0, 0), font);
 
-            var panel1 = new PanelView(null, Vector2.Zero) {Width = 200, Height = 100};
-            var panel2 = new PanelView(null, Vector2.Zero) {Width = 250, Height = 140};
+            var panel1 = new PanelView(null, Vector2.Zero) {Width = 400, Height = 250};
+            var panel2 = new PanelView(null, Vector2.Zero) {Width = 470, Height = 250};
 
             tabs.AddTab("Tab 1", panel1);
             tabs.AddTab("Tab 2", panel2);
 
-            new TextFieldView(panel1, Vector2.Zero, font) {Text = "This is tab 1.", Width = 150, Height = 30};
-            new ButtonView(panel2, "This is tab 2!", Vector2.Zero, font);
+            new TextFieldView(panel1, Vector2.Zero, font) {Text = "This is tab 1.", Width = 380, Height = 230};
+
+            for (int i = 0; i < 34; i++)
+            {
+                var button = new ButtonView(panel2, "Button" + (i + 1), Vector2.Zero, font);
+                button.OnMouseClick += (sender, e) => panel2.RemoveChild(button);
+            }
+
+            ButtonView switchLayouts = new ButtonView(panel, "Switch to Horizontal Layout", Vector2.Zero, font);
+            switchLayouts.OnMouseClick += (sender, e) =>
+                                              {
+                                                  if (panel2.ChildrenLayout is VerticalViewLayout)
+                                                  {
+                                                      panel2.ChildrenLayout = new HorizontalViewLayout(2, true);
+                                                      switchLayouts.Text = "Switch to Vertical Layout";
+                                                  }
+                                                  else if (panel2.ChildrenLayout is HorizontalViewLayout)
+                                                  {
+                                                      panel2.ChildrenLayout = new VerticalViewLayout(2, true);
+                                                      switchLayouts.Text = "Switch to Horizontal Layout";
+                                                  }
+                                              };
+            panel.ChildrenLayout = new VerticalViewLayout(4, true);
+            panel2.ChildrenLayout = new VerticalViewLayout(2, true);
+
+            
 
         }
 
