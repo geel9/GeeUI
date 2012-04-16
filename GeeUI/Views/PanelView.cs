@@ -14,10 +14,7 @@ namespace GeeUI.Views
         {
             get
             {
-                NinePatch curPatch = Selected ? SelectedNinepatch : UnselectedNinepatch;
-                int width = curPatch.LeftWidth + curPatch.RightWidth + Width;
-                int height = curPatch.TopHeight + curPatch.BottomHeight + Height;
-                return new Rectangle((int)Position.X, (int)Position.Y, width, height);
+                return new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
             }
         }
 
@@ -26,7 +23,7 @@ namespace GeeUI.Views
             get
             {
                 NinePatch curPatch = Selected ? SelectedNinepatch : UnselectedNinepatch;
-                return new Rectangle((int)Position.X + curPatch.LeftWidth + ChildrenPadding, (int)Position.Y + curPatch.TopHeight + ChildrenPadding, Width - ChildrenPadding, Height - ChildrenPadding);
+                return new Rectangle((int)Position.X + curPatch.LeftWidth + ChildrenPadding, (int)Position.Y + curPatch.TopHeight + ChildrenPadding, Width - ChildrenPadding - curPatch.LeftWidth - curPatch.RightWidth, Height - ChildrenPadding - curPatch.TopHeight - curPatch.BottomHeight);
             }
         }
 
@@ -40,7 +37,7 @@ namespace GeeUI.Views
         protected internal override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
         {
             NinePatch patch = Selected ? SelectedNinepatch : UnselectedNinepatch;
-            patch.Draw(spriteBatch, AbsolutePosition, Width, Height);
+            patch.Draw(spriteBatch, AbsolutePosition, Width - patch.LeftWidth - patch.RightWidth, Height - patch.TopHeight - patch.BottomHeight);
             base.Draw(spriteBatch);
         }
 

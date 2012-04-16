@@ -32,10 +32,9 @@ namespace GeeUI.Views
         {
             get
             {
-                TabHost p = (TabHost) ParentView;
                 return ActiveTabView == null
                            ? new Rectangle(X, Y, 0, 0)
-                           : new Rectangle(X, Y, AllTabsWidth, ActiveTabView.BoundBox.Height);
+                           : new Rectangle(X, Y, Width, Height);
             }
         }
 
@@ -86,8 +85,29 @@ namespace GeeUI.Views
             base.OnMOff();
         }
 
+        private void setChildrenWidth()
+        {
+            var maxWidth = 0;
+            foreach (View c in Children)
+                if (c.Width > maxWidth) maxWidth = c.Width;
+            foreach (var child in Children)
+            {
+                child.Width = maxWidth;
+            }
+        }
+
         protected internal override void Update(GameTime theTime)
         {
+            //setChildrenWidth();
+            this.Height = 10000;
+            this.Width = ParentView.Width;
+            OrderChildren(ChildrenLayout);
+            this.Height = 0;
+
+            foreach(View v in Children)
+            {
+                if (v.BoundBox.Bottom > Height) Height = v.BoundBox.Bottom;
+            }
             base.Update(theTime);
         }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using GeeUI.Managers;
 
 namespace GeeUI.Views
 {
@@ -17,19 +18,7 @@ namespace GeeUI.Views
         {
             get
             {
-                var width = (int)Font.MeasureString(Text).X;
-                var height = (int)Font.MeasureString(Text).Y;
-                switch (TextJustification)
-                {
-                    default:
-                        return new Rectangle(X, Y, width, height);
-
-                    case TextJustification.Center:
-                        return new Rectangle(X - (width / 2), Y, width, height);
-
-                    case TextJustification.Right:
-                        return new Rectangle(X - width, Y, width, height);
-                }
+                return new Rectangle(X, Y, Width, Height);
             }
         }
 
@@ -37,18 +26,55 @@ namespace GeeUI.Views
         {
             get
             {
-                var width = (int)Font.MeasureString(Text).X;
+                var width = (int)Font.MeasureString(shortenedText).X;
+                var height = (int) Font.MeasureString(shortenedText).Y;
                 switch (TextJustification)
                 {
                     default:
                         return new Vector2(0, 0);
-
                     case TextJustification.Center:
-                        return new Vector2(width / 2, 0);
+                        return new Vector2(-((Width / 2) - (width / 2)), -((Height / 2) - (height / 2)));
 
                     case TextJustification.Right:
-                        return new Vector2(width, 0);
+                        return new Vector2(-((Width / 2) + (width / 2)), 0);
                 }
+            }
+        }
+
+        private string shortenedText
+        {
+            get
+            {
+                var tWidth = Font.MeasureString(Text).X;
+                if (tWidth > Width)
+                {
+                    string testingCur = "";
+                    string ret = "";
+                    foreach (char t in Text)
+                    {
+                        testingCur += t;
+                        tWidth = Font.MeasureString(testingCur).X;
+                        if(tWidth > Width)
+                        {
+                            string test = testingCur + "\na";
+                            var height = Font.MeasureString(ret + test).Y;
+                            if(height > Height)
+                            {
+                                for (int i = 0; i < testingCur.Length; i++ )
+                                {
+                                    string t2 = testingCur.Substring(0, testingCur.Length - (i + 1));
+                                    var w = Font.MeasureString(t2 + "...").X;
+                                    if (w <= Width) return ret + t2 + "...";
+                                }
+                                    return ret;
+                            }
+                            ret += testingCur + "\n";
+                            testingCur = "";
+                        }
+                    }
+                    return ret + testingCur;
+                }
+                return Text;
             }
         }
 
@@ -80,7 +106,7 @@ namespace GeeUI.Views
 
         protected internal override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(Font, Text, AbsolutePosition, TextColor, 0f, TextOrigin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.DrawString(Font, shortenedText, AbsolutePosition, TextColor, 0f, TextOrigin, 1f, SpriteEffects.None, 0f);
             base.Draw(spriteBatch);
         }
 

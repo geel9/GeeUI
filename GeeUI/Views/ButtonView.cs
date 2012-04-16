@@ -33,20 +33,18 @@ namespace GeeUI.Views
         {
             get
             {
-                if(Children[0] is TextView)
+                if (!(Children[0] is TextView))
                 {
-                    TextView c = (TextView) Children[0];
-                    return c.Text;
+                    return "";
                 }
-                return "";
+                var c = (TextView) Children[0];
+                return c.Text;
             }
             set
             {
-                if (Children[0] is TextView)
-                {
-                    TextView c = (TextView)Children[0];
-                    c.Text = value;
-                }
+                if (!(Children[0] is TextView)) return;
+                var c = (TextView)Children[0];
+                c.Text = value;
             }
         }
 
@@ -54,10 +52,7 @@ namespace GeeUI.Views
         {
             get
             {
-                NinePatch patch = CurrentNinepatch;
-                int width = patch.LeftWidth + patch.RightWidth + (ButtonContentview != null ? ButtonContentview.BoundBox.Width : 0);
-                int height = patch.TopHeight + patch.BottomHeight + (ButtonContentview != null ? ButtonContentview.BoundBox.Height : 0);
-                return new Rectangle((int)Position.X, (int)Position.Y, width, height);
+                return new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
             }
         }
 
@@ -82,7 +77,9 @@ namespace GeeUI.Views
             Position = position;
 
             //Make the TextView for the text
-            new TextView(this, text, new Vector2(0, 0), font);
+            new TextView(this, text, new Vector2(0, 0), font) {TextJustification = TextJustification.Center};
+            Width = (int)font.MeasureString(text).X + NinePatchNormal.LeftWidth + NinePatchNormal.RightWidth;
+            Height = (int) font.MeasureString(text).Y + NinePatchNormal.TopHeight + NinePatchNormal.BottomHeight;
         }
 
         public ButtonView(View rootview, View contentView, Vector2 position) : base(rootview)
@@ -115,13 +112,16 @@ namespace GeeUI.Views
         protected internal override void Draw(SpriteBatch spriteBatch)
         {
             NinePatch patch = CurrentNinepatch;
-            int width = ButtonContentview != null ? ButtonContentview.BoundBox.Width : 0;
-            int height = ButtonContentview != null ? ButtonContentview.BoundBox.Height : 0;
+            int width = Width - patch.LeftWidth - patch.RightWidth;
+            int height = Height - patch.TopHeight - patch.BottomHeight;
+
             patch.Draw(spriteBatch, AbsolutePosition, width, height);
 
             View childView = ButtonContentview;
             if (childView != null)
             {
+                childView.Width = width;
+                childView.Height = height;
                 childView.X = patch.LeftWidth;
                 childView.Y = patch.TopHeight;
             }

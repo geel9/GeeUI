@@ -46,6 +46,14 @@ namespace GeeUI.Managers
             DrawBox(topLeft, bottomRight, c, b, rotation, alpha, e, wrong);
         }
 
+        public static void DrawBox(Rectangle box, Color c, SpriteBatch b, float rotation = 0, byte alpha = 255, Effect e = null, bool wrong = false)
+        {
+            var topLeft = new Vector2(box.Left, box.Top);
+            var bottomRight = new Vector2(box.Right, box.Bottom);
+
+            DrawBox(topLeft, bottomRight, c, b, rotation, alpha, e, wrong);
+        }
+
         public static void DrawBox(Vector2 topLeft, Vector2 bottomRight, Color c, SpriteBatch b, float rotation = 0, byte alpha = 255, Effect e = null, bool wrong = false)
         {
             if (e != null)

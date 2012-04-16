@@ -411,12 +411,12 @@ namespace GeeUI.Views
                 totalLine += line;
             }
 
-            var yDrawPos = (int)(AbsolutePosition.Y + patch.TopHeight + TextInputFont.MeasureString(totalLine).Y);
+            var yDrawPos = (int)(AbsoluteY + patch.TopHeight + TextInputFont.MeasureString(totalLine).Y);
             var yDrawLine = lines[cursorY];
             var cur = "";
             for (var x = _offsetX; x < cursorX && x < yDrawLine.Length; x++)
                 cur += yDrawLine[x];
-            var xDrawPos = (int)TextInputFont.MeasureString(cur).X + (int)(AbsolutePosition.X + patch.LeftWidth);
+            var xDrawPos = (int)TextInputFont.MeasureString(cur).X + (AbsoluteX + patch.LeftWidth);
 
             return new Vector2(xDrawPos, yDrawPos);
         }

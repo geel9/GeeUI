@@ -45,27 +45,42 @@ namespace GeeUITestBed
 
             var font = Content.Load<SpriteFont>("testFont");
 
+            /*  var north = new PanelView(GeeUI.GeeUI.RootView, Vector2.Zero);
+              var south = new ButtonView(GeeUI.GeeUI.RootView, "South", new Vector2(10, 10), font);
+              var east = new ButtonView(GeeUI.GeeUI.RootView, "EastEastEastEastEastEast", new Vector2(10, 10), font);
+              var west = new PanelView(GeeUI.GeeUI.RootView, Vector2.Zero);
+              var middle = new ButtonView(GeeUI.GeeUI.RootView, "Middle", new Vector2(10, 10), font);
+              GeeUI.GeeUI.RootView.ChildrenLayout = new BorderViewLayout(north, south, west, east, middle, 20, 20);*/
 
-            var window = new WindowView(GeeUI.GeeUI.RootView, new Vector2(5, 5), font)
-                             {WindowText = "Tab Views"};
-            var panel = new PanelView(window, new Vector2(0, 0)) {Width = 500, Height = 400};
-            var tabs = new TabHost(panel, new Vector2(0, 0), font);
 
-            var panel1 = new PanelView(null, Vector2.Zero) {Width = 400, Height = 250};
-            var panel2 = new PanelView(null, Vector2.Zero) {Width = 470, Height = 250};
+            var window = new WindowView(GeeUI.GeeUI.RootView, new Vector2(5, 5), font) { WindowText = "Tab Views", Width = 500, Height = 400 };
+            var panel = new PanelView(window, new Vector2(0, 0)) { Width = 500, Height = 400 };
+
+            var tabs = new TabHost(panel, new Vector2(0, 0), font) { Width = 470, Height = 300 };
+
+            var panel1 = new PanelView(null, Vector2.Zero);
+            var panel2 = new PanelView(null, Vector2.Zero);
 
             tabs.AddTab("Tab 1", panel1);
             tabs.AddTab("Tab 2", panel2);
+            for (int i = 0; i < 10; i++)
+            {
+                tabs.AddTab("Tab " + (3 + i), new PanelView(null, Vector2.Zero));
+            }
 
-            new TextFieldView(panel1, Vector2.Zero, font) {Text = "This is tab 1.", Width = 380, Height = 230};
+            new TextFieldView(panel1, Vector2.Zero, font) { Text = "This is tab 1.", Width = 380, Height = 230 };
 
-            for (int i = 0; i < 34; i++)
+            for (int i = 0; i < 50; i++)
             {
                 var button = new ButtonView(panel2, "Button" + (i + 1), Vector2.Zero, font);
+                button.Width = 70;
+                // button.Height = 20;
                 button.OnMouseClick += (sender, e) => panel2.RemoveChild(button);
             }
 
             ButtonView switchLayouts = new ButtonView(panel, "Switch to Horizontal Layout", Vector2.Zero, font);
+            //switchLayouts.Height = 20;
+            //switchLayouts.Width = 100;
             switchLayouts.OnMouseClick += (sender, e) =>
                                               {
                                                   if (panel2.ChildrenLayout is VerticalViewLayout)
@@ -81,8 +96,6 @@ namespace GeeUITestBed
                                               };
             panel.ChildrenLayout = new VerticalViewLayout(4, true);
             panel2.ChildrenLayout = new VerticalViewLayout(2, true);
-
-            
 
         }
 

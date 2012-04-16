@@ -44,14 +44,7 @@ namespace GeeUI.Views
         {
             get
             {
-                NinePatch patch = Selected ? NinePatchSelected : NinePatchNormal;
-                Rectangle childBoundBox = WindowContentView.BoundBox;
-                Vector2 windowTextSize = WindowTextFont.MeasureString(WindowText);
-                var height = (int)(patch.TopHeight + patch.BottomHeight + windowTextSize.Y + childBoundBox.Height);
-
-                //The width of the content view is the width of the window title bar
-                var width = childBoundBox.Width;
-                return new Rectangle((int)Position.X, (int)Position.Y, width, height);
+                return new Rectangle(X, Y, Width, Height);
             }
         }
 
@@ -60,14 +53,9 @@ namespace GeeUI.Views
             get
             {
                 NinePatch patch = Selected ? NinePatchSelected : NinePatchNormal;
-                Rectangle childBoundBox = WindowContentView.BoundBox;
                 Vector2 windowTextSize = WindowTextFont.MeasureString(WindowText);
                 var barHeight = (patch.TopHeight + patch.BottomHeight + windowTextSize.Y);
-                var height = childBoundBox.Height;
-
-                //The width of the content view is the width of the window title bar
-                var width = childBoundBox.Width;
-                return new Rectangle((int)Position.X, (int)Position.Y + (int)barHeight, width, height);
+                return new Rectangle(X, Y + (int)barHeight, Width, Height - (int)barHeight);
             }
         }
 
@@ -95,9 +83,20 @@ namespace GeeUI.Views
         protected internal override void Draw(SpriteBatch spriteBatch)
         {
             NinePatch patch = Selected ? NinePatchSelected : NinePatchNormal;
-            patch.Draw(spriteBatch, AbsolutePosition, WindowContentView.BoundBox.Width - (patch.LeftWidth + patch.RightWidth), (int)WindowTextFont.MeasureString(WindowText).Y);
+
+            patch.Draw(spriteBatch, AbsolutePosition, Width - patch.LeftWidth - patch.RightWidth, (int)WindowTextFont.MeasureString(WindowText).Y);
+
             string text = TextView.TruncateString(WindowText, WindowTextFont, WindowContentView.ContentBoundBox.Width);
             spriteBatch.DrawString(WindowTextFont, text, AbsolutePosition + new Vector2(patch.LeftWidth, patch.TopHeight), Color.Black);
+
+            if(WindowContentView != null)
+            {
+                WindowContentView.Width = Width;
+                Vector2 windowTextSize = WindowTextFont.MeasureString(WindowText);
+                var barHeight = (patch.TopHeight + patch.BottomHeight + windowTextSize.Y);
+                WindowContentView.Height = Height - (int)barHeight;
+            }
+
             base.Draw(spriteBatch);
         }
 
@@ -106,9 +105,6 @@ namespace GeeUI.Views
             FollowMouse();
             if (WindowContentView != null)
             {
-                NinePatch patch = Selected ? NinePatchSelected : NinePatchNormal;
-                Vector2 windowTextSize = WindowTextFont.MeasureString(WindowText);
-                var height = (int)(patch.TopHeight + patch.BottomHeight + windowTextSize.Y);
                 WindowContentView.Position = new Vector2(0, 0);
             }
 

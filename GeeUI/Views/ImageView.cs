@@ -11,7 +11,7 @@ namespace GeeUI.Views
         {
             get
             {
-                return new Rectangle((int)Position.X, (int)Position.Y, (int)ScaledImageSize.X, (int)ScaledImageSize.Y);
+                return new Rectangle(X, Y, (int)ScaledImageSize.X, (int)ScaledImageSize.Y);
             }
         }
 

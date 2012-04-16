@@ -195,7 +195,7 @@ namespace GeeUI
             }
             foreach (View child in sortedChildren)
             {
-                if (!child.AbsoluteBoundBox.Contains(mousePos)) continue;
+                if (!child.AbsoluteBoundBox.Contains(mousePos) || !child.Active) continue;
                 HandleMouseMovement(child, mousePos);
                 didLower = true;
                 child.MouseOver = true;
@@ -210,6 +210,7 @@ namespace GeeUI
         public static void Update(GameTime gameTime)
         {
             _inputManager.Update(gameTime);
+            RootView.Update(gameTime);
             UpdateView(RootView, gameTime);
         }
 

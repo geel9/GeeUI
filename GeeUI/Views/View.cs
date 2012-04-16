@@ -51,7 +51,7 @@ namespace GeeUI.Views
         {
             get
             {
-                return new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
+                return new Rectangle(X, Y, Width, Height);
             }
         }
 
@@ -182,7 +182,8 @@ namespace GeeUI.Views
 
         public virtual void OrderChildren(ViewLayout layout)
         {
-            layout.OrderChildren(this);
+            if(layout != null)
+                layout.OrderChildren(this);
         }
         #endregion
 
@@ -262,6 +263,8 @@ namespace GeeUI.Views
 
         protected internal virtual void Update(GameTime theTime)
         {
+            if (ChildrenLayout != null)
+                OrderChildren(ChildrenLayout);
             if (ParentView == null || IgnoreParentBounds) return;
             var curBB = AbsoluteBoundBox;
             var parentBB = ParentView.AbsoluteContentBoundBox;
@@ -284,8 +287,7 @@ namespace GeeUI.Views
                     Y -= yOffset;
             }
 
-            if(ChildrenLayout != null)
-                OrderChildren(ChildrenLayout);
+            
         }
 
         protected internal virtual void Draw(SpriteBatch spriteBatch)

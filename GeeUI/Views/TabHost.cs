@@ -30,13 +30,7 @@ namespace GeeUI.Views
         {
             get
             {
-                View activeTab = TabContainerView.ActiveTabView;
-                if(activeTab == null) return new Rectangle(X, Y, 0, 0);
-
-                activeTab = TabViewToView((TabView)activeTab);
-                return new Rectangle(X, Y,
-                    (int) MathHelper.Max(activeTab.BoundBox.Width, TabContainerView.BoundBox.Width),
-                    activeTab.BoundBox.Height + TabContainerView.BoundBox.Height);
+                return new Rectangle(X, Y, Width, Height);
             }
         }
 
@@ -45,7 +39,7 @@ namespace GeeUI.Views
         {
             Position = position;
             TabContainerView = new TabContainer(this, font);
-
+            TabContainerView.ChildrenLayout = new HorizontalViewLayout(1, true);
         }
 
         internal View TabViewToView(TabView v)
@@ -57,7 +51,6 @@ namespace GeeUI.Views
         public void AddTab(string tabText, View newTab)
         {
             TabContainerView.AddTab(tabText, newTab);
-            TabContainerView.OrderChildren(new HorizontalViewLayout(1));
         }
 
         public void SetActiveTab(int index)
@@ -99,6 +92,8 @@ namespace GeeUI.Views
             for (int i = 1; i < Children.Length; i++  )
             {
                 Children[i].Position = new Vector2(0, TabContainerView.BoundBox.Height);
+                Children[i].Width = Width;
+                Children[i].Height = Height - TabContainerView.BoundBox.Height;
             }
             base.Update(theTime);
         }

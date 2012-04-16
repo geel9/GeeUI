@@ -48,7 +48,7 @@ namespace GeeUI.Views
         {
             get
             {
-                float percent = (SliderPosition) / (float)Width;
+                float percent = (SliderPosition) / (float)(Width - SliderRange.LeftWidth - SliderRange.RightWidth);
                 return (int)(_min + ((_max - _min) * percent));
             }
         }
@@ -67,7 +67,7 @@ namespace GeeUI.Views
         {
             get
             {
-                return new Rectangle(X, Y, SliderRange.LeftWidth + SliderRange.RightWidth + Width, (int)MathHelper.Max(SliderRange.Texture.Height, SliderDefault.Height));
+                return new Rectangle(X, Y, Width, (int)MathHelper.Max(SliderRange.Texture.Height, SliderDefault.Height));
             }
         }
 
@@ -114,7 +114,7 @@ namespace GeeUI.Views
             if (!_clicked) return;
             if (InputManager.IsMousePressed(MouseButton.Left))
             {
-                SliderPosition = (int)MathHelper.Clamp((int)(position.X - AbsoluteX + SliderRange.LeftWidth), 0, Width);
+                SliderPosition = (int)MathHelper.Clamp((int)(position.X - AbsoluteX + SliderRange.LeftWidth), 0, Width - SliderRange.RightWidth);
                 if (OnSliderValueChanged != null)
                     OnSliderValueChanged(null, null);
             }
@@ -143,7 +143,7 @@ namespace GeeUI.Views
             spriteBatch.Draw(CurSliderTexture, new Vector2(AbsoluteX + SliderRange.LeftWidth - (CurSliderTexture.Width) + SliderPosition, AbsoluteY), null, Color.White, 0f, new Vector2(CurSliderTexture.Width / -2, 0), 1f, SpriteEffects.None, 0f);
             if (DrawText)
             {
-                int drawX = AbsoluteX + (SliderRange.LeftWidth + Width + SliderRange.RightWidth) / 2;
+                int drawX = AbsoluteX + (Width) / 2;
                 int drawY = AbsoluteY;
                 Vector2 offset = TextFont.MeasureString(CurrentValue.ToString());
                 offset.X = (int)(offset.X / 2);

@@ -14,7 +14,35 @@ namespace GeeUI.Views
 
         public SpriteFont TabFont;
 
-        public string TabText = "Tab";
+        public string TabText
+        {
+            get { return TabTextView.Text; }
+            set
+            {
+                TabTextView.Text = value;
+                TabTextView.Width = (int)TabFont.MeasureString(value).X;
+                TabTextView.Height = Height - CurNinepatch.TopHeight - CurNinepatch.BottomHeight;
+                this.Width = TabTextView.Width + CurNinepatch.LeftWidth + CurNinepatch.RightWidth;
+            }
+        }
+
+        private TextView TabTextView
+        {
+            get
+            {
+                return Children.Length == 0 ? null : (TextView)Children[0];
+            }
+            set
+            {
+                if (Children.Length == 0)
+                {
+                    AddChild(value);
+                    return;
+                }
+                _children[0] = value;
+                ReOrderChildrenDepth();
+            }
+        }
 
         public NinePatch CurNinepatch
         {
@@ -26,8 +54,18 @@ namespace GeeUI.Views
             get
             {
                 return new Rectangle(X, Y,
-                        (int)(CurNinepatch.LeftWidth + TabFont.MeasureString(TabText).X + CurNinepatch.RightWidth),
-                        (int)(CurNinepatch.TopHeight + TabFont.MeasureString(TabText).Y + CurNinepatch.BottomHeight));
+                        Width,
+                        Height);
+            }
+        }
+
+        public override Rectangle ContentBoundBox
+        {
+            get
+            {
+                return new Rectangle(X + CurNinepatch.LeftWidth, Y + CurNinepatch.TopHeight,
+                        Width - CurNinepatch.LeftWidth - CurNinepatch.RightWidth,
+                        Height - CurNinepatch.TopHeight - CurNinepatch.BottomHeight);
             }
         }
 
@@ -36,10 +74,12 @@ namespace GeeUI.Views
         {
             Position = position;
             TabFont = font;
-            NumChildrenAllowed = 0;
+            NumChildrenAllowed = 1;
 
             NinePatchDefault = GeeUI.NinePatchTabDefault;
             NinePatchSelected = GeeUI.NinePatchTabSelected;
+            this.Height = 25;
+            new TextView(this, "", Vector2.Zero, font) { TextJustification = TextJustification.Center };
         }
 
         protected internal override void OnMClick(Vector2 position, bool fromChild = false)
@@ -65,17 +105,17 @@ namespace GeeUI.Views
 
         protected internal override void Update(GameTime theTime)
         {
+            TabTextView.Width = Width - CurNinepatch.LeftWidth - CurNinepatch.RightWidth;
+            if (Width >= ParentView.Width) Width = ParentView.Width - 1;
             base.Update(theTime);
         }
 
         protected internal override void Draw(SpriteBatch spriteBatch)
         {
-            var width = (int)TabFont.MeasureString(TabText).X;
-            var height = (int)TabFont.MeasureString(TabText).Y;
+            var width = Width - CurNinepatch.LeftWidth - CurNinepatch.RightWidth;
+            var height = Height - CurNinepatch.TopHeight - CurNinepatch.BottomHeight;
 
             CurNinepatch.Draw(spriteBatch, AbsolutePosition, width, height);
-            spriteBatch.DrawString(TabFont, TabText, AbsolutePosition + new Vector2(CurNinepatch.LeftWidth, CurNinepatch.TopHeight), Color.Black);
-
             base.Draw(spriteBatch);
         }
     }
