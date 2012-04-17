@@ -84,25 +84,25 @@ namespace GeeUI.Views
             Position = position;
         }
 
-        protected internal override void OnMClick(Vector2 position, bool fromChild = false)
+        public override void OnMClick(Vector2 position, bool fromChild = false)
         {
             SliderCalc(position);
             _clicked = true;
             base.OnMClick(position);
         }
-        protected internal override void OnMClickAway(bool fromChild = false)
+        public override void OnMClickAway(bool fromChild = false)
         {
             _clicked = false;
             //base.onMClickAway();
         }
 
-        protected internal override void OnMOver(bool fromChild = false)
+        public override void OnMOver(bool fromChild = false)
         {
             Vector2 position = InputManager.GetMousePosV();
             SliderCalc(position);
             base.OnMOver();
         }
-        protected internal override void OnMOff(bool fromChild = false)
+        public override void OnMOff(bool fromChild = false)
         {
             Vector2 position = InputManager.GetMousePosV();
             SliderCalc(position);
@@ -125,7 +125,7 @@ namespace GeeUI.Views
         }
 
 
-        protected internal override void Update(GameTime theTime)
+        public override void Update(GameTime theTime)
         {
             if (_min > _max)
             {
@@ -136,7 +136,7 @@ namespace GeeUI.Views
             base.Update(theTime);
         }
 
-        protected internal override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             //We want to preserve the slider skin's original height.
             SliderRange.Draw(spriteBatch, AbsolutePosition, Width, SliderRange.BottomMostPatch - SliderRange.TopMostPatch);

@@ -99,29 +99,29 @@ namespace GeeUI.Views
             TextureDefaultSelected = GeeUI.TextureCheckBoxSelected;
         }
 
-        protected internal override void OnMClick(Vector2 position, bool fromChild = false)
+        public override void OnMClick(Vector2 position, bool fromChild = false)
         {
             if (AllowLabelClicking || fromChild == false)
                 IsChecked = !IsChecked;
             base.OnMClick(position);
         }
-        protected internal override void OnMClickAway(bool fromChild = false)
+        public override void OnMClickAway(bool fromChild = false)
         {
             //base.onMClickAway();
         }
 
-        protected internal override void OnMOver(bool fromChild = false)
+        public override void OnMOver(bool fromChild = false)
         {
             if (!AllowLabelClicking && !CheckBoundBox.Contains(InputManager.GetMousePos()))
                 _mouseOver = false;
             base.OnMOver();
         }
-        protected internal override void OnMOff(bool fromChild = false)
+        public override void OnMOff(bool fromChild = false)
         {
             base.OnMOff();
         }
 
-        protected internal override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(CurTexture, AbsolutePosition, Color.White);
             base.Draw(spriteBatch);

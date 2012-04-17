@@ -74,13 +74,10 @@ namespace GeeUITestBed
             {
                 var button = new ButtonView(panel2, "Button" + (i + 1), Vector2.Zero, font);
                 button.Width = 70;
-                // button.Height = 20;
                 button.OnMouseClick += (sender, e) => panel2.RemoveChild(button);
             }
 
             ButtonView switchLayouts = new ButtonView(panel, "Switch to Horizontal Layout", Vector2.Zero, font);
-            //switchLayouts.Height = 20;
-            //switchLayouts.Width = 100;
             switchLayouts.OnMouseClick += (sender, e) =>
                                               {
                                                   if (panel2.ChildrenLayout is VerticalViewLayout)

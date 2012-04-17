@@ -30,7 +30,7 @@ namespace GeeUI.Views
 
         public int NumChildrenAllowed = -1;
 
-        internal bool _mouseOver;
+        protected bool _mouseOver;
         public bool MouseOver
         {
             get
@@ -136,7 +136,7 @@ namespace GeeUI.Views
         public int Width, Height;
 
 // ReSharper disable InconsistentNaming
-        protected internal List<View> _children = new List<View>();
+        protected List<View> _children = new List<View>();
 // ReSharper restore InconsistentNaming
 
         public View[] Children
@@ -147,7 +147,7 @@ namespace GeeUI.Views
             }
         }
 
-        protected internal View()
+        internal View()
         {
         }
 
@@ -235,33 +235,33 @@ namespace GeeUI.Views
 
         #region Virtual methods/events
 
-        protected internal virtual void OnMClick(Vector2 position, bool fromChild = false)
+        public virtual void OnMClick(Vector2 position, bool fromChild = false)
         {
             if (OnMouseClick != null)
                 OnMouseClick(this, new EventArgs());
             if (ParentView != null) ParentView.OnMClick(position, true);
         }
 
-        protected internal virtual void OnMClickAway(bool fromChild = false)
+        public virtual void OnMClickAway(bool fromChild = false)
         {
 
         }
 
-        protected internal virtual void OnMOver(bool fromChild = false)
+        public virtual void OnMOver(bool fromChild = false)
         {
             if (OnMouseOver != null)
                 OnMouseOver(this, new EventArgs());
             if (ParentView != null) ParentView.OnMOver(true);
         }
 
-        protected internal virtual void OnMOff(bool fromChild = false)
+        public virtual void OnMOff(bool fromChild = false)
         {
             if (OnMouseOff != null)
                 OnMouseOff(this, new EventArgs());
             if (ParentView != null) ParentView.OnMOff(true);
         }
 
-        protected internal virtual void Update(GameTime theTime)
+        public virtual void Update(GameTime theTime)
         {
             if (ChildrenLayout != null)
                 OrderChildren(ChildrenLayout);
@@ -290,7 +290,7 @@ namespace GeeUI.Views
             
         }
 
-        protected internal virtual void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
         }
 

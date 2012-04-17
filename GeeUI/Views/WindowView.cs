@@ -80,7 +80,7 @@ namespace GeeUI.Views
             LastMousePosition = newMousePosition;
         }
 
-        protected internal override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             NinePatch patch = Selected ? NinePatchSelected : NinePatchNormal;
 
@@ -100,7 +100,7 @@ namespace GeeUI.Views
             base.Draw(spriteBatch);
         }
 
-        protected internal override void Update(GameTime theTime)
+        public override void Update(GameTime theTime)
         {
             FollowMouse();
             if (WindowContentView != null)
@@ -111,7 +111,7 @@ namespace GeeUI.Views
             base.Update(theTime);
         }
 
-        protected internal override void OnMClick(Vector2 position, bool fromChild = false)
+        public override void OnMClick(Vector2 position, bool fromChild = false)
         {
             SelectedOffChildren = !fromChild;
             Selected = true;
@@ -125,20 +125,20 @@ namespace GeeUI.Views
             base.OnMClick(position, true);
         }
 
-        protected internal override void OnMClickAway(bool fromChild = false)
+        public override void OnMClickAway(bool fromChild = false)
         {
             SelectedOffChildren = false;
             Selected = false;
             WindowContentView.Selected = false;
             base.OnMClickAway(true);
         }
-        protected internal override void OnMOff(bool fromChild = false)
+        public override void OnMOff(bool fromChild = false)
         {
             FollowMouse();
             base.OnMOff(true);
         }
 
-        protected internal override void OnMOver(bool fromChild = false)
+        public override void OnMOver(bool fromChild = false)
         {
             FollowMouse();
             base.OnMOver(fromChild);

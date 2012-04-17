@@ -21,7 +21,7 @@ namespace GeeUI.Views
                     AddChild(value);
                     return;
                 }
-                _children[0] = value;
+                this._children[0] = value;
                 ReOrderChildrenDepth();
             }
         }
@@ -44,7 +44,7 @@ namespace GeeUI.Views
 
         internal View TabViewToView(TabView v)
         {
-            int index = TabContainerView._children.IndexOf(v) + 1;
+            int index = TabContainerView.Children.ToList().IndexOf(v) + 1;
             return index >= Children.Length ? null : Children[index];
         }
 
@@ -69,25 +69,25 @@ namespace GeeUI.Views
             Children[index + 1].Selected = true;
         }
 
-        protected internal override void OnMClick(Vector2 position, bool fromChild = false)
+        public override void OnMClick(Vector2 position, bool fromChild = false)
         {
             base.OnMClick(position);
         }
-        protected internal override void OnMClickAway(bool fromChild = false)
+        public override void OnMClickAway(bool fromChild = false)
         {
             //base.onMClickAway();
         }
 
-        protected internal override void OnMOver(bool fromChild = false)
+        public override void OnMOver(bool fromChild = false)
         {
             base.OnMOver();
         }
-        protected internal override void OnMOff(bool fromChild = false)
+        public override void OnMOff(bool fromChild = false)
         {
             base.OnMOff();
         }
 
-        protected internal override void Update(GameTime theTime)
+        public override void Update(GameTime theTime)
         {
             for (int i = 1; i < Children.Length; i++  )
             {
@@ -104,7 +104,7 @@ namespace GeeUI.Views
             base.AddChild(child);
         }
 
-        protected internal override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
         }

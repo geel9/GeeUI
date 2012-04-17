@@ -4,11 +4,8 @@ using GeeUI.Structs;
 
 namespace GeeUI.Views
 {
-    public class TabView : View
+    internal class TabView : View
     {
-
-
-
         public NinePatch NinePatchSelected = new NinePatch();
         public NinePatch NinePatchDefault = new NinePatch();
 
@@ -82,35 +79,35 @@ namespace GeeUI.Views
             new TextView(this, "", Vector2.Zero, font) { TextJustification = TextJustification.Center };
         }
 
-        protected internal override void OnMClick(Vector2 position, bool fromChild = false)
+        public override void OnMClick(Vector2 position, bool fromChild = false)
         {
             var p = (TabContainer)ParentView;
             p.TabClicked(this);
 
             base.OnMClick(position);
         }
-        protected internal override void OnMClickAway(bool fromChild = false)
+        public override void OnMClickAway(bool fromChild = false)
         {
             //base.OnMClickAway();
         }
 
-        protected internal override void OnMOver(bool fromChild = false)
+        public override void OnMOver(bool fromChild = false)
         {
             base.OnMOver();
         }
-        protected internal override void OnMOff(bool fromChild = false)
+        public override void OnMOff(bool fromChild = false)
         {
             base.OnMOff();
         }
 
-        protected internal override void Update(GameTime theTime)
+        public override void Update(GameTime theTime)
         {
             TabTextView.Width = Width - CurNinepatch.LeftWidth - CurNinepatch.RightWidth;
             if (Width >= ParentView.Width) Width = ParentView.Width - 1;
             base.Update(theTime);
         }
 
-        protected internal override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             var width = Width - CurNinepatch.LeftWidth - CurNinepatch.RightWidth;
             var height = Height - CurNinepatch.TopHeight - CurNinepatch.BottomHeight;

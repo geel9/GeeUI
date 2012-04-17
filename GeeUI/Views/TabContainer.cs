@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GeeUI.Views
 {
-    public class TabContainer : View
+    internal class TabContainer : View
     {
         public SpriteFont TabFont;
 
@@ -67,20 +67,20 @@ namespace GeeUI.Views
             TabFont = font;
         }
 
-        protected internal override void OnMClick(Vector2 position, bool fromChild = false)
+        public override void OnMClick(Vector2 position, bool fromChild = false)
         {
             base.OnMClick(position);
         }
-        protected internal override void OnMClickAway(bool fromChild = false)
+        public override void OnMClickAway(bool fromChild = false)
         {
             //base.OnMClickAway();
         }
 
-        protected internal override void OnMOver(bool fromChild = false)
+        public override void OnMOver(bool fromChild = false)
         {
             base.OnMOver();
         }
-        protected internal override void OnMOff(bool fromChild = false)
+        public override void OnMOff(bool fromChild = false)
         {
             base.OnMOff();
         }
@@ -96,13 +96,13 @@ namespace GeeUI.Views
             }
         }
 
-        protected internal override void Update(GameTime theTime)
+        public override void Update(GameTime theTime)
         {
             //setChildrenWidth();
-            this.Height = 10000;
-            this.Width = ParentView.Width;
+            Height = 10000;
+            Width = ParentView.Width;
             OrderChildren(ChildrenLayout);
-            this.Height = 0;
+            Height = 0;
 
             foreach(View v in Children)
             {
@@ -111,7 +111,7 @@ namespace GeeUI.Views
             base.Update(theTime);
         }
 
-        protected internal override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
         }

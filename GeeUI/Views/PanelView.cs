@@ -34,7 +34,7 @@ namespace GeeUI.Views
             Position = position;
         }
 
-        protected internal override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
+        public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
         {
             NinePatch patch = Selected ? SelectedNinepatch : UnselectedNinepatch;
             patch.Draw(spriteBatch, AbsolutePosition, Width - patch.LeftWidth - patch.RightWidth, Height - patch.TopHeight - patch.BottomHeight);
@@ -43,22 +43,22 @@ namespace GeeUI.Views
 
 
 
-        protected internal override void OnMClick(Vector2 position, bool fromChild = false)
+        public override void OnMClick(Vector2 position, bool fromChild = false)
         {
             base.OnMClick(position, true);
         }
 
-        protected internal override void OnMClickAway(bool fromChild = false)
+        public override void OnMClickAway(bool fromChild = false)
         {
             base.OnMClickAway(true);
         }
 
-        protected internal override void OnMOver(bool fromChild = false)
+        public override void OnMOver(bool fromChild = false)
         {
             base.OnMOver(true);
         }
 
-        protected internal override void OnMOff(bool fromChild = false)
+        public override void OnMOff(bool fromChild = false)
         {
             base.OnMOff(true);
         }

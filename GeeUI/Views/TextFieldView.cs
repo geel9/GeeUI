@@ -362,7 +362,7 @@ namespace GeeUI.Views
             return ret;
         }
 
-        protected internal override void OnMClick(Vector2 mousePosition, bool fromChild = false)
+        public override void OnMClick(Vector2 mousePosition, bool fromChild = false)
         {
             Selected = true;
 
@@ -375,13 +375,13 @@ namespace GeeUI.Views
             base.OnMClick(mousePosition);
         }
 
-        protected internal override void OnMClickAway(bool fromChild = false)
+        public override void OnMClickAway(bool fromChild = false)
         {
             Selected = false;
             _selectionEnd = _selectionStart = new Vector2(-1);
         }
 
-        protected internal override void OnMOver(bool fromChild = false)
+        public override void OnMOver(bool fromChild = false)
         {
             if (Selected && InputManager.IsMousePressed(MouseButton.Left))
             {
@@ -390,7 +390,7 @@ namespace GeeUI.Views
             }
             base.OnMOver();
         }
-        protected internal override void OnMOff(bool fromChild = false)
+        public override void OnMOff(bool fromChild = false)
         {
             base.OnMOff();
         }
@@ -421,7 +421,7 @@ namespace GeeUI.Views
             return new Vector2(xDrawPos, yDrawPos);
         }
 
-        protected internal override void Update(GameTime theTime)
+        public override void Update(GameTime theTime)
         {
             if (InputManager.IsKeyPressed(_buttonHeld))
             {
@@ -439,7 +439,7 @@ namespace GeeUI.Views
         }
 
 
-        protected internal override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             var patch = Selected ? NinePatchSelected : NinePatchDefault;
             patch.Draw(spriteBatch, AbsolutePosition, Width, Height);
