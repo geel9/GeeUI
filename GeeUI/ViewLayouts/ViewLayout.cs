@@ -4,7 +4,11 @@ namespace GeeUI.ViewLayouts
 {
     public class ViewLayout
     {
-        public List<View> excludedChildren = new List<View>();
+        /// <summary>
+        /// Any child in this List will be ignored by the ViewLayout.
+        /// </summary>
+        public List<View> ExcludedChildren = new List<View>();
+
         public ViewLayout()
         {
 

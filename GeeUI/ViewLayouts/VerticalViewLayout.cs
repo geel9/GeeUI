@@ -29,7 +29,7 @@ namespace GeeUI.ViewLayouts
             foreach (View v in parentView.Children)
             {
                 v.Position = Vector2.Zero;
-                if (excludedChildren.Contains(v)) continue;
+                if (ExcludedChildren.Contains(v)) continue;
                 v.Position = new Vector2(container.Left, yDone);
                 yDone += v.BoundBox.Height + _paddingBetweenVertical;
             }
@@ -44,7 +44,7 @@ namespace GeeUI.ViewLayouts
             foreach (View v in parentView.Children)
             {
                 v.Position = Vector2.Zero;
-                if (excludedChildren.Contains(v)) continue;
+                if (ExcludedChildren.Contains(v)) continue;
 
                 if (widestChild == null || v.BoundBox.Width > widestChild.BoundBox.Width)
                     widestChild = v;
