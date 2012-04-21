@@ -53,16 +53,17 @@ namespace GeeUITestBed
               GeeUI.GeeUI.RootView.ChildrenLayout = new BorderViewLayout(north, south, west, east, middle, 20, 20);*/
 
 
-            var window = new WindowView(GeeUI.GeeUI.RootView, new Vector2(5, 5), font) { WindowText = "Tab Views", Width = 500, Height = 400 };
-            var panel = new PanelView(window, new Vector2(0, 0)) { Width = 500, Height = 400 };
+           // var window = new WindowView(GeeUI.GeeUI.RootView, new Vector2(5, 5), font) { WindowText = "Tab Views", Width = 500, Height = 400 };
+            var panel = new PanelView(GeeUI.GeeUI.RootView, new Vector2(5, 5)) { Width = 600, Height = 400 };
 
-            var tabs = new TabHost(panel, new Vector2(0, 0), font) { Width = 470, Height = 300 };
+            var tabs = new TabHost(panel, new Vector2(0, 0), font) { Width = 570, Height = 300 };
 
             var panel1 = new PanelView(null, Vector2.Zero);
             var panel2 = new PanelView(null, Vector2.Zero);
 
             tabs.AddTab("Tab 1", panel1);
             tabs.AddTab("Tab 2", panel2);
+
             for (int i = 0; i < 10; i++)
             {
                 tabs.AddTab("Tab " + (3 + i), new PanelView(null, Vector2.Zero));

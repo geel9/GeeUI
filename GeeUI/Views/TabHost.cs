@@ -87,6 +87,11 @@ namespace GeeUI.Views
             base.OnMOff();
         }
 
+        public override void BringChildToFront(View view)
+        {
+            return;
+        }
+
         public override void Update(GameTime theTime)
         {
             for (int i = 1; i < Children.Length; i++  )

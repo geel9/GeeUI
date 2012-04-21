@@ -1,4 +1,5 @@
-﻿using GeeUI.Structs;
+﻿using GeeUI.Managers;
+using GeeUI.Structs;
 using Microsoft.Xna.Framework;
 
 namespace GeeUI.Views
@@ -9,6 +10,14 @@ namespace GeeUI.Views
         public NinePatch SelectedNinepatch = new NinePatch();
 
         private const int ChildrenPadding = 1;
+
+        /// <summary>
+        /// If true, the panel can be dragged by the user.
+        /// </summary>
+        public bool Draggable = true;
+
+        private bool SelectedOffChildren;
+        private Vector2 MouseSelectedOffset;
 
         public override Rectangle BoundBox
         {
@@ -41,25 +50,45 @@ namespace GeeUI.Views
             base.Draw(spriteBatch);
         }
 
+        protected internal void FollowMouse()
+        {
+            if (!Draggable) return;
+            Vector2 newMousePosition = InputManager.GetMousePosV();
+            if (SelectedOffChildren && Selected && InputManager.IsMousePressed(MouseButton.Left))
+            {
+                Position = (newMousePosition - MouseSelectedOffset);
+            }
+        }
 
 
         public override void OnMClick(Vector2 position, bool fromChild = false)
         {
+            SelectedOffChildren = !fromChild;
+            Selected = true;
+            MouseSelectedOffset = position - Position;
+            if (ParentView != null)
+                ParentView.BringChildToFront(this);
+
+            FollowMouse();
             base.OnMClick(position, true);
         }
 
         public override void OnMClickAway(bool fromChild = false)
         {
+            SelectedOffChildren = false;
+            Selected = false;
             base.OnMClickAway(true);
         }
 
         public override void OnMOver(bool fromChild = false)
         {
+            FollowMouse();
             base.OnMOver(true);
         }
 
         public override void OnMOff(bool fromChild = false)
         {
+            FollowMouse();
             base.OnMOff(true);
         }
     }

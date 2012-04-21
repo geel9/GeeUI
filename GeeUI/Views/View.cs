@@ -202,7 +202,7 @@ namespace GeeUI.Views
 
         #region Child depth ordering
 
-        public void BringChildToFront(View view)
+        public virtual void BringChildToFront(View view)
         {
             _children.Remove(view);
             var sortedChildren = _children;
