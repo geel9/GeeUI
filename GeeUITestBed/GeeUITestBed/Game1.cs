@@ -13,12 +13,15 @@ namespace GeeUITestBed
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
 
+        public static Texture2D agop;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             _graphics.PreferMultiSampling = true;
+
         }
 
         /// <summary>
@@ -44,18 +47,24 @@ namespace GeeUITestBed
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             var font = Content.Load<SpriteFont>("testFont");
+           /* agop = Content.Load<Texture2D>("agop");
 
-            /*  var north = new PanelView(GeeUI.GeeUI.RootView, Vector2.Zero);
-              var south = new ButtonView(GeeUI.GeeUI.RootView, "South", new Vector2(10, 10), font);
-              var east = new ButtonView(GeeUI.GeeUI.RootView, "EastEastEastEastEastEast", new Vector2(10, 10), font);
-              var west = new PanelView(GeeUI.GeeUI.RootView, Vector2.Zero);
-              var middle = new ButtonView(GeeUI.GeeUI.RootView, "Middle", new Vector2(10, 10), font);
-              GeeUI.GeeUI.RootView.ChildrenLayout = new BorderViewLayout(north, south, west, east, middle, 20, 20);*/
+            for(int i = 0; i < 35; i++)
+            {
+                var panel = new View(GeeUI.GeeUI.RootView) {Width = 300, Height = 300};
+                for(int j = 0; j < 7; j++)
+                {
+                    var newImage = new ImageView(panel, agop);
+                    newImage.ScaleVector = new Vector2(.75f);
+                }
+                panel.ChildrenLayout = new SpinViewLayout(130, 1.5f);
+            }
 
+            GeeUI.GeeUI.RootView.ChildrenLayout = new SpinViewLayout(350, -1.5f);
 
-           // var window = new WindowView(GeeUI.GeeUI.RootView, new Vector2(5, 5), font) { WindowText = "Tab Views", Width = 500, Height = 400 };
+            */
             var panel = new PanelView(GeeUI.GeeUI.RootView, new Vector2(5, 5)) { Width = 600, Height = 400 };
-
+            
             var tabs = new TabHost(panel, new Vector2(0, 0), font) { Width = 570, Height = 300 };
 
             var panel1 = new PanelView(null, Vector2.Zero);
@@ -63,12 +72,6 @@ namespace GeeUITestBed
 
             tabs.AddTab("Tab 1", panel1);
             tabs.AddTab("Tab 2", panel2);
-
-            for (int i = 0; i < 10; i++)
-            {
-                tabs.AddTab("Tab " + (3 + i), new PanelView(null, Vector2.Zero));
-            }
-
             new TextFieldView(panel1, Vector2.Zero, font) { Text = "This is tab 1.", Width = 380, Height = 230 };
 
             for (int i = 0; i < 50; i++)
@@ -78,18 +81,18 @@ namespace GeeUITestBed
                 button.OnMouseClick += (sender, e) => panel2.RemoveChild(button);
             }
 
-            ButtonView switchLayouts = new ButtonView(panel, "Switch to Horizontal Layout", Vector2.Zero, font);
+            ButtonView switchLayouts = new ButtonView(panel, "Switch to Spinning Layout", Vector2.Zero, font);
             switchLayouts.OnMouseClick += (sender, e) =>
                                               {
                                                   if (panel2.ChildrenLayout is VerticalViewLayout)
                                                   {
-                                                      panel2.ChildrenLayout = new HorizontalViewLayout(2, true);
+                                                      panel2.ChildrenLayout = new SpinViewLayout(115);
                                                       switchLayouts.Text = "Switch to Vertical Layout";
                                                   }
-                                                  else if (panel2.ChildrenLayout is HorizontalViewLayout)
+                                                  else if (panel2.ChildrenLayout is SpinViewLayout)
                                                   {
                                                       panel2.ChildrenLayout = new VerticalViewLayout(2, true);
-                                                      switchLayouts.Text = "Switch to Horizontal Layout";
+                                                      switchLayouts.Text = "Switch to Spinning Layout";
                                                   }
                                               };
             panel.ChildrenLayout = new VerticalViewLayout(4, true);

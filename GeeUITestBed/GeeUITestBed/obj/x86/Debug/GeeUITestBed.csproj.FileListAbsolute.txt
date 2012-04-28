@@ -16,3 +16,4 @@ C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\ResolveAssemblyRefer
 C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\GeeUITestBed.exe
 C:\Users\Josh\GeeUI\GeeUITestBed\GeeUITestBed\obj\x86\Debug\GeeUITestBed.pdb
+D:\Projects\C#\GeeUI\GeeUITestBed\GeeUITestBed\bin\x86\Debug\Content\agop.xnb

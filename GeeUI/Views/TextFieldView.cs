@@ -162,35 +162,22 @@ namespace GeeUI.Views
                 switch (key)
                 {
                     case Keys.Back:
-                        var lines = TextLines;
-                        var curPos = _cursorX;
-                        for (var i = 0; i < _cursorY; i++)
-                        {
-                            var lineL = lines[i] + (i < _cursorY ? "\n" : "");
-                            curPos += lineL.Length;
-                        }
-                        if (curPos > 0)
-                        {
-                            Text = Text.Remove(curPos - 1, 1);
-                            _cursorX--;
-                        }
-                        if (_cursorX < 0)
-                        {
-                            _cursorX = lines[_cursorY - 1].Length;
-                            _cursorY--;
-                        }
-
+                        BackSpace();
                         break;
                     case Keys.Left:
+                        SelectionArrowKeys();
                         MoveCursorX(-1);
                         break;
                     case Keys.Right:
+                        SelectionArrowKeys();
                         MoveCursorX(1);
                         break;
                     case Keys.Up:
+                        SelectionArrowKeys();
                         MoveCursorY(-1);
                         break;
                     case Keys.Down:
+                        SelectionArrowKeys();
                         MoveCursorY(1);
                         break;
                     case Keys.Enter:
@@ -205,6 +192,93 @@ namespace GeeUI.Views
                 }
             }
             ReEvaluateOffset();
+        }
+
+        private void SelectionArrowKeys()
+        {
+            if (_selectionEnd == _selectionStart || _selectionEnd == new Vector2(-1)) return;
+
+            var start = _selectionStart;
+            var end = _selectionEnd;
+            if (_selectionStart.Y > _selectionEnd.Y || (_selectionStart.Y == _selectionEnd.Y && _selectionStart.X > _selectionEnd.X))
+            {
+                //Need to swap the variables.
+                var store = start;
+                start = end;
+                end = store;
+            }
+            _cursorX = (int) end.X;
+            _cursorY = (int) end.Y;
+            _selectionEnd = _selectionStart = new Vector2(-1);
+        }
+
+        private void BackSpace()
+        {
+            if (_selectionStart == _selectionEnd || _selectionEnd == new Vector2(-1))
+            {
+                var lines = TextLines;
+                var curPos = _cursorX;
+                for (var i = 0; i < _cursorY; i++)
+                {
+                    var lineL = lines[i] + (i < _cursorY ? "\n" : "");
+                    curPos += lineL.Length;
+                }
+                if (curPos > 0)
+                {
+                    Text = Text.Remove(curPos - 1, 1);
+                    _cursorX--;
+                }
+                if (_cursorX < 0)
+                {
+                    _cursorX = lines[_cursorY - 1].Length;
+                    _cursorY--;
+                }
+                return;
+            }
+
+
+            var start = _selectionStart;
+            var end = _selectionEnd;
+            if (_selectionStart.Y > _selectionEnd.Y || (_selectionStart.Y == _selectionEnd.Y && _selectionStart.X > _selectionEnd.X))
+            {
+                //Need to swap the variables.
+                var store = start;
+                start = end;
+                end = store;
+            }
+            string before = "";
+            string after = "";
+
+            float beforeEndX = start.X;
+            float beforeEndY = start.Y;
+            float afterStartX = end.X;
+            float afterStartY = end.Y;
+
+            for (int y = 0; y <= beforeEndY; y++)
+            {
+                if (y != 0) before += "\n";
+                var xUnder = (y == beforeEndY) ? beforeEndX : TextLines[y].Length;
+                for (int x = 0; x < xUnder; x++)
+                {
+                    before += TextLines[y][x];
+                }
+            }
+            for (var y = afterStartY; y < TextLines.Length; y++)
+            {
+                if (y != afterStartY) after += "\n";
+                for (var x = afterStartX; x < TextLines[(int)y].Length; x++)
+                {
+                    after += TextLines[(int)y][(int)x];
+                }
+                afterStartX = 0;
+            }
+            Text = before;
+            //Hacky way of easily finding the co-ordinates for the new cursor position.
+            _cursorY = TextLines.Length - 1;
+            _cursorX = TextLines[_cursorY].Length;
+            Text += after;
+
+            _selectionEnd = _selectionStart = new Vector2(-1);
         }
 
         private void MoveCursorX(int xMovement)
@@ -255,7 +329,7 @@ namespace GeeUI.Views
 
         private void ReEvaluateOffset()
         {
-            if(_selectionStart == _selectionEnd)
+            if (_selectionStart == _selectionEnd)
                 _selectionEnd = _selectionStart = Vector2.Zero;
             var ret = "";
             var lines = TextLines;
@@ -301,13 +375,56 @@ namespace GeeUI.Views
 
         private void AppendTextCursor(string text)
         {
-            string[] lines = TextLines;
-            string curLine = lines[_cursorY];
-            string before = curLine.Substring(0, _cursorX);
-            string after = (_cursorX < curLine.Length) ? curLine.Substring(_cursorX) : "";
-            lines[_cursorY] = before + text + after;
-            TextLines = lines;
-            MoveCursorX(text.Length);
+            string before = "";
+            string after = "";
+
+            float beforeEndX = _cursorX;
+            float beforeEndY = _cursorY;
+            float afterStartX = _cursorX;
+            float afterStartY = _cursorY;
+
+            if (_selectionStart != _selectionEnd && _selectionEnd != new Vector2(-1))
+            {
+                var start = _selectionStart;
+                var end = _selectionEnd;
+                if (_selectionStart.Y > _selectionEnd.Y || (_selectionStart.Y == _selectionEnd.Y && _selectionStart.X > _selectionEnd.X))
+                {
+                    //Need to swap the variables.
+                    var store = start;
+                    start = end;
+                    end = store;
+                }
+
+                beforeEndX = start.X;
+                beforeEndY = start.Y;
+                afterStartX = end.X;
+                afterStartY = end.Y;
+            }
+            for (int y = 0; y <= beforeEndY; y++)
+            {
+                if (y != 0) before += "\n";
+                var xUnder = (y == beforeEndY) ? beforeEndX : TextLines[y].Length;
+                for (int x = 0; x < xUnder; x++)
+                {
+                    before += TextLines[y][x];
+                }
+            }
+            for (var y = afterStartY; y < TextLines.Length; y++)
+            {
+                if (y != afterStartY) after += "\n";
+                for (var x = afterStartX; x < TextLines[(int)y].Length; x++)
+                {
+                    after += TextLines[(int)y][(int)x];
+                }
+                afterStartX = 0;
+            }
+            Text = before + text;
+            //Hacky way of easily finding the co-ordinates for the new cursor position.
+            _cursorY = TextLines.Length - 1;
+            _cursorX = TextLines[_cursorY].Length;
+            Text += after;
+
+            _selectionEnd = _selectionStart = new Vector2(-1);
         }
 
         public void AppendText(string text)
@@ -328,19 +445,20 @@ namespace GeeUI.Views
 
             var actualText = "";
 
+            bool setY = false;
+            bool setX = false;
             for (var iY = _offsetY; iY < lines.Length; iY++)
             {
                 var textHeight = (int)TextInputFont.MeasureString(actualText + lines[iY]).Y;
                 if (textHeight >= actualClickPos.Y)
                 {
                     ret.Y = iY;
+                    setY = true;
 
                     var line = lines[iY];
 
                     //No need to make another variable
                     actualText = "";
-
-                    bool setX = false;
 
                     for (int iX = _offsetX; iX < line.Length; iX++)
                     {
@@ -352,13 +470,15 @@ namespace GeeUI.Views
                         break;
                     }
 
-                    if (!setX)
-                        ret.X = line.Length;
+                    
 
                     break;
                 }
                 actualText += lines[iY] + "\n";
             }
+            if (!setY) ret.Y = TextLines.Length - 1;
+            if (!setX)
+                ret.X = TextLines[(int)ret.Y].Length;
             return ret;
         }
 
@@ -387,11 +507,17 @@ namespace GeeUI.Views
             {
                 var clickPos = GetMouseTextPos(InputManager.GetMousePosV());
                 _selectionEnd = clickPos;
+                _cursorX = (int) clickPos.X;
+                _cursorY = (int) clickPos.Y;
             }
             base.OnMOver();
         }
         public override void OnMOff(bool fromChild = false)
         {
+            if (Selected && InputManager.IsMousePressed(MouseButton.Left))
+            {
+                
+            }
             base.OnMOff();
         }
 
@@ -441,16 +567,14 @@ namespace GeeUI.Views
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            var patch = Selected ? NinePatchSelected : NinePatchDefault;
-            patch.Draw(spriteBatch, AbsolutePosition, Width, Height);
-
-            spriteBatch.DrawString(TextInputFont, OffsetText, AbsolutePosition + new Vector2(patch.LeftWidth, patch.TopHeight), Color.Black);
-
             var drawPos = GetDrawPosForCursorPos(_cursorX, _cursorY);
             var xDrawPos = drawPos.X;
             var yDrawPos = drawPos.Y;
 
-            if (_selectionStart != new Vector2(-1) && _selectionEnd != new Vector2(-1))
+            var patch = Selected ? NinePatchSelected : NinePatchDefault;
+            patch.Draw(spriteBatch, AbsolutePosition, Width, Height);
+
+            if (_selectionStart != _selectionEnd && _selectionEnd != new Vector2(-1))
             {
                 var start = _selectionStart;
                 var end = _selectionEnd;
@@ -461,17 +585,39 @@ namespace GeeUI.Views
                     start = end;
                     end = store;
                 }
-                var drawSS = GetDrawPosForCursorPos((int)start.X, (int)start.Y);
-                var drawSE = GetDrawPosForCursorPos((int)end.X, (int)end.Y);
-                spriteBatch.DrawString(TextInputFont, "|", new Vector2(drawSS.X - 1, drawSS.Y), Color.Red);
-                spriteBatch.DrawString(TextInputFont, "|", new Vector2(drawSE.X - 1, drawSE.Y), Color.Green);
+
+                for (int y = (int)start.Y; y <= end.Y; y++)
+                {
+                    string line = TextLines[y];
+                    if (line == "") line = " ";
+                    var startDrawX = patch.LeftWidth;
+                    var startDrawY = GetDrawPosForCursorPos(0, y).Y;
+                    var endDrawX = Width - patch.RightWidth;
+                    var endDrawY = TextInputFont.MeasureString(line).Y + startDrawY - 1;
+                    startDrawX += AbsoluteX;
+                    endDrawX += AbsoluteX;
+
+                    if (y == start.Y)
+                    {
+                        startDrawX = (int)GetDrawPosForCursorPos((int)start.X, (int)start.Y).X;
+                    }
+                    if (y == end.Y)
+                    {
+                        endDrawX = (int)GetDrawPosForCursorPos((int)end.X, (int)end.Y).X;
+                    }
+                    if (y == 0) endDrawY += 1;
+
+                    DrawManager.DrawBox(new Vector2(startDrawX, startDrawY), new Vector2(endDrawX, endDrawY), Color.Blue, spriteBatch, 0f, 20);
+                }
             }
+
+            spriteBatch.DrawString(TextInputFont, OffsetText, AbsolutePosition + new Vector2(patch.LeftWidth, patch.TopHeight), Color.Black);
 
             if (_delimiterTime++ % DelimiterLimit == 0)
             {
                 _doingDelimiter = !_doingDelimiter;
             }
-            if (_doingDelimiter && Selected)
+            if (_doingDelimiter && Selected && _selectionEnd == _selectionStart)
                 spriteBatch.DrawString(TextInputFont, "|", new Vector2(xDrawPos - 1, yDrawPos), Color.Black);
             base.Draw(spriteBatch);
         }

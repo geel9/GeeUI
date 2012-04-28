@@ -78,6 +78,7 @@
     <Compile Include="Structs\ViewDepthComparer.cs" />
     <Compile Include="ViewLayouts\BorderViewLayout.cs" />
     <Compile Include="ViewLayouts\HorizontalViewLayout.cs" />
+    <Compile Include="ViewLayouts\SpinViewLayout.cs" />
     <Compile Include="ViewLayouts\VerticalViewLayout.cs" />
     <Compile Include="ViewLayouts\ViewLayout.cs" />
     <Compile Include="Views\ButtonView.cs" />
