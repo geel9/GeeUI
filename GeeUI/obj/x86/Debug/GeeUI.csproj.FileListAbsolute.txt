@@ -15,3 +15,15 @@ C:\Users\Josh\GeeUI\GeeUI\obj\x86\Debug\GenerateResource.write.1.tlog
 C:\Users\Josh\GeeUI\GeeUI\obj\x86\Debug\GeeUI.dll
 C:\Users\Josh\GeeUI\GeeUI\obj\x86\Debug\GeeUI.pdb
 D:\Projects\C#\GeeUI\GeeUI\obj\x86\Debug\GeeUI.csprojResolveAssemblyReference.cache
+G:\GeeUI\GeeUI\bin\x86\Debug\FNA.dll.config
+G:\GeeUI\GeeUI\bin\x86\Debug\GeeUI.dll
+G:\GeeUI\GeeUI\bin\x86\Debug\GeeUI.pdb
+G:\GeeUI\GeeUI\bin\x86\Debug\FNA.dll
+G:\GeeUI\GeeUI\bin\x86\Debug\FNA.pdb
+G:\GeeUI\GeeUI\obj\x86\Debug\GeeUI.csproj.AssemblyReference.cache
+G:\GeeUI\GeeUI\obj\x86\Debug\GeeUI.Resource1.resources
+G:\GeeUI\GeeUI\obj\x86\Debug\GeeUI.csproj.GenerateResource.cache
+G:\GeeUI\GeeUI\obj\x86\Debug\GeeUI.csproj.CoreCompileInputs.cache
+G:\GeeUI\GeeUI\obj\x86\Debug\GeeUI.csproj.CopyComplete
+G:\GeeUI\GeeUI\obj\x86\Debug\GeeUI.dll
+G:\GeeUI\GeeUI\obj\x86\Debug\GeeUI.pdb
